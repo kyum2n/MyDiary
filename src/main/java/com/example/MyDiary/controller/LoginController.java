@@ -1,4 +1,4 @@
-package com.example.MyDiary.controller;
+package com.example.mydiary.controller;
 
 public class LoginController {
     
