@@ -2,41 +2,88 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: #e0e0e0;
+            padding: 40px;
+            border-radius: 10px;
+            width: 320px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .login-buttons {
+            margin: 10px 0;
+        }
+        .login-buttons button {
+            padding: 10px 20px;
+            background-color: #888;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .links {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .social-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .circle-btn {
+            width: 120px;
+            height: 40px;
+            border-radius: 20px; /* 원 대신 pill 버튼 형태 */
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .kakao { background-color: #f7e600; color: black; }
+        .naver { background-color: #2db400; }
+        .google { background-color: #ffffff; color: black; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
-    <h2>로그인</h2>
+    <div class="login-container">
+        <h2>로그인</h2>
+        <form th:action="@{/authentication}" method="post">
+            <input type="text" name="usernameInput" placeholder="아이디 입력" required><br>
+            <input type="password" name="passwordInput" placeholder="비밀번호 입력" required><br>
 
-    <!-- 일반 로그인 폼 -->
-    <form th:action="@{/authentication}" method="post">
-        <label for="usernameInput">아이디</label>
-        <input type="text" id="usernameInput" name="usernameInput" required><br>
+            <div class="login-buttons">
+                <button type="submit">로그인</button>
+            </div>
+        </form>
 
-        <label for="passwordInput">비밀번호</label>
-        <input type="password" id="passwordInput" name="passwordInput" required><br>
+        <div class="links">
+            <a href="#">아이디/비밀번호 찾기</a> | 
+            <a href="#">회원가입</a>
+        </div>
 
-        <button type="submit">로그인</button>
-    </form>
-
-    <hr>
-
-    <!-- 소셜 로그인 -->
-    <h3>소셜 로그인</h3>
-    <div>
-        <a th:href="@{/oauth2/authorization/google}">Google 로그인</a><br>
-        <a th:href="@{/oauth2/authorization/naver}">Naver 로그인</a><br>
-        <a th:href="@{/oauth2/authorization/kakao}">Kakao 로그인</a>
-    </div>
-
-    <!-- 로그인 실패 메시지 -->
-    <div th:if="${param.error}">
-        <p style="color: red;">로그인에 실패했습니다. 아이디나 비밀번호를 확인하세요.</p>
-    </div>
-
-    <!-- 로그아웃 메시지 -->
-    <div th:if="${param.logout}">
-        <p style="color: green;">성공적으로 로그아웃되었습니다.</p>
+        <div class="social-buttons">
+            <a th:href="@{/oauth2/authorization/kakao}" class="circle-btn kakao">KaKao</a>
+            <a th:href="@{/oauth2/authorization/naver}" class="circle-btn naver">Naver</a>
+            <a th:href="@{/oauth2/authorization/google}" class="circle-btn google">Google</a>
+        </div>
     </div>
 </body>
 </html>
