@@ -1,33 +1,40 @@
 package com.example.mydiary.service;
 
+import com.example.mydiary.entity.User;
+import com.example.mydiary.oauth.OAuthAttributes;
+import com.example.mydiary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.*;
 import org.springframework.security.oauth2.core.user.*;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private final UserRepository userRepository;
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2User oAuth2User = super.loadUser(userRequest);
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
 
-        // 사용자 정보 추출 (Google, Naver, Kakao 구조 다름 → 필요시 분기)
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // "google", "naver", "kakao"
+        User user = userRepository.findByUsername(attributes.getEmail())
+                .orElseGet(() -> userRepository.save(User.builder()
+                        .username(attributes.getEmail())
+                        .displayName(attributes.getName())
+                        .password("SOCIAL_LOGIN")
+                        .role("ROLE_USER")
+                        .build()));
 
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
-
-        // 여기선 그냥 통일된 방식으로 사용 (확장 가능)
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                attributes,
-                userNameAttributeName
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole())),
+                attributes.getAttributes(),
+                "email"
         );
     }
 }

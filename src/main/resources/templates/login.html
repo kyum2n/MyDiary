@@ -1,11 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
 </head>
 <body>
-    
+    <h2>로그인</h2>
+
+    <!-- 일반 로그인 폼 -->
+    <form th:action="@{/authentication}" method="post">
+        <label for="usernameInput">아이디</label>
+        <input type="text" id="usernameInput" name="usernameInput" required><br>
+
+        <label for="passwordInput">비밀번호</label>
+        <input type="password" id="passwordInput" name="passwordInput" required><br>
+
+        <button type="submit">로그인</button>
+    </form>
+
+    <hr>
+
+    <!-- 소셜 로그인 -->
+    <h3>소셜 로그인</h3>
+    <div>
+        <a th:href="@{/oauth2/authorization/google}">Google 로그인</a><br>
+        <a th:href="@{/oauth2/authorization/naver}">Naver 로그인</a><br>
+        <a th:href="@{/oauth2/authorization/kakao}">Kakao 로그인</a>
+    </div>
+
+    <!-- 로그인 실패 메시지 -->
+    <div th:if="${param.error}">
+        <p style="color: red;">로그인에 실패했습니다. 아이디나 비밀번호를 확인하세요.</p>
+    </div>
+
+    <!-- 로그아웃 메시지 -->
+    <div th:if="${param.logout}">
+        <p style="color: green;">성공적으로 로그아웃되었습니다.</p>
+    </div>
 </body>
 </html>

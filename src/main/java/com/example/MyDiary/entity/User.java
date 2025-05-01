@@ -5,7 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,11 +16,13 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;  // 로그인 ID
+    private String username;
 
     @Column(nullable = false)
-    private String password;  // 암호화된 비밀번호
+    private String password;
 
     @Column(nullable = false)
-    private String role;  // 예: "ROLE_USER", "ROLE_ADMIN"
+    private String role;
+
+    private String displayName; // 소셜 사용자 이름 표시용
 }
