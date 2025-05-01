@@ -4,25 +4,26 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "member")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long uId;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String uEmail;
 
     @Column(nullable = false)
-    private String password;
+    private String uPwd;
 
-    @Column(nullable = false)
-    private String role;
+    private String uName;
+    private String uImage;
 
-    private String displayName; // 소셜 사용자 이름 표시용
+    private String provider;      // ex: "naver", "google"
+    private String providerId;    // 네이버에서 온 고유 ID
 }
