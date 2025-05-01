@@ -4,10 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.example.mydiary.service.MyUserService;
+import com.example.mydiary.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,8 +16,9 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final MyUserService myUserService;
+    private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -37,6 +39,9 @@ public class SecurityConfig {
 
             .oauth2Login(oauth2 -> oauth2 //소셜 로그인도 설정됨
                 .loginPage("/login")  // 소셜 로그인도 동일한 로그인 페이지 사용
+                .userInfoEndpoint(userInfo -> userInfo
+                .userService(customOAuth2UserService)
+            )
                 .defaultSuccessUrl("/", true)) // 성공 시 메인으로 이동
 
             .logout(logout -> logout
