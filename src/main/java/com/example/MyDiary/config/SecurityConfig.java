@@ -2,7 +2,12 @@ package com.example.mydiary.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import com.example.mydiary.service.MyUserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -10,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final MyUserDetailsService UserDetailsService;
-    private final passwordEncoder passwordEncoder;
+    private final MyUserService myUserService;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
