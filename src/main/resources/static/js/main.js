@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 이미지 로드 후 교체하는 함수
     function renderItems(items) {
         items.forEach((entry, index) => {
             // 1. placeholder 스켈레톤 추가
@@ -107,6 +108,4 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
-
 });
