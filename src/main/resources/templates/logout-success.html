@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그아웃 중...</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h2>로그아웃 중입니다. 잠시만 기다려 주세요...</h2>
+
+    <script>
+        // 네이버 로그아웃 팝업 자동 실행
+        const popup = window.open("https://nid.naver.com/nidlogin.logout", 
+        "logoutPopup", 
+        "width=1,height=1");
+
+        // 0.001초 뒤 팝업 닫고 로그인 페이지로 자동 이동
+        setTimeout(() => {
+            try { if (popup) popup.close();} catch(e) {}
+            window.location.href = "/login";
+        }, 200);
+    </script>
+</body>
+</html>

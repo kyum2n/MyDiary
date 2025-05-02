@@ -12,7 +12,6 @@ import lombok.*;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uId;
 
     @Column(nullable = false, unique = true)
@@ -24,6 +23,9 @@ public class Member {
     private String uName;
     private String uImage;
 
-    private String provider;      // ex: "naver", "google"
-    private String providerId;    // 네이버에서 온 고유 ID
+    @Transient
+    private String provider;
+
+    @Transient
+    private String providerId;
 }

@@ -31,8 +31,8 @@ public class LoginController {
     }
 
     // 네이버 콜백 후 성공 시 리디렉션 처리 (Spring Security가 자동 처리하지만 예시로 둠)
-    @GetMapping("/loginSuccess")
-    public String loginSuccess() {
-        return "redirect:/";  // 로그인 후 홈으로 이동
+    @GetMapping("/logout-success")
+    public String logoutSuccess() {
+        return "logout-success"; // → templates/logout-success.html
     }
 }

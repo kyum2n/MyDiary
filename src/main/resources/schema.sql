@@ -1,17 +1,18 @@
 CREATE TABLE member (
-    u_id SERIAL PRIMARY KEY,
-    u_name VARCHAR(100) NOT NULL,
-    u_pwd VARCHAR(100) NOT NULL,
-    u_email VARCHAR(100) NOT NULL UNIQUE,
-    u_image VARCHAR(2200)
+    uId VARCHAR(100) NOT NULL PRIMARY KEY,
+    uName VARCHAR(100) NOT NULL,
+    uPwd VARCHAR(100) NOT NULL,
+    uEmail VARCHAR(100) NOT NULL UNIQUE,
+    uImage VARCHAR(100)
 );
 
 CREATE TABLE diary (
-    id SERIAL PRIMARY KEY,
-    u_id INTEGER NOT NULL,
-    title VARCHAR(100),
-    date DATE,
+    id SERIAL NOT NULL PRIMARY KEY,
+    uId VARCHAR(100) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    date DATE NOT NULL,
+    image VARCHAR(200),
     location VARCHAR(100),
     content TEXT,
-    CONSTRAINT fk_member FOREIGN KEY (u_id) REFERENCES member(u_id) ON DELETE CASCADE
+    CONSTRAINT fk_member FOREIGN KEY (uId) REFERENCES member(uId) ON DELETE CASCADE
 );

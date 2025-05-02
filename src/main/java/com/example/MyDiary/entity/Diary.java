@@ -7,6 +7,7 @@ public class Diary {
     private Long uId;
     private String title;
     private LocalDate date;
+    private String image;
     private String location;
     private String content;
 }
