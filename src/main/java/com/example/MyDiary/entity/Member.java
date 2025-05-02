@@ -12,15 +12,19 @@ import lombok.*;
 public class Member {
 
     @Id
-    private Long uId;
+    @Column(name = "uid")
+    private String uId; // 수동 지정, @GeneratedValue 제거
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "uemail", nullable = false, unique = true)
     private String uEmail;
 
-    @Column(nullable = false)
+    @Column(name = "upwd", nullable = false)
     private String uPwd;
 
+    @Column(name = "uname")
     private String uName;
+
+    @Column(name = "uimage")
     private String uImage;
 
     @Transient
