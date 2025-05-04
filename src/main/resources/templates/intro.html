@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>환영합니다!</title>
+    <title>MyDiary - 환영합니다</title>
+    <link rel="stylesheet" th:href="@{/css/intro.css}">
 </head>
 <body>
-<form>
-    <input type="button" value="로그인">
-</form>
+<div class="intro-container">
+    <h1>환영합니다!</h1>
+    <p class="subtitle">당신의 일상을 기록해보세요. MyDiary에 오신 걸 환영합니다.</p>
+    
+    <img src="/img/welcome.png" alt="다이어리 이미지" class="welcome-img">
 
+    <a th:href="@{/login}" class="login-button">로그인</a>
+
+    <ul class="features">
+        <li>✔ 일상 기록 및 사진 저장</li>
+        <li>✔ 소셜 로그인으로 간편하게 시작</li>
+        <li>✔ 캘린더로 한눈에 정리</li>
+    </ul>
+</div>
 </body>
 </html>

@@ -16,11 +16,11 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findByuEmail(userId)
+        Member member = memberRepository.findByuId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
         return new User(
-                member.getUEmail(),
+                member.getUId(),  // 로그인 식별자로 uId 사용
                 member.getUPwd(),
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
         );

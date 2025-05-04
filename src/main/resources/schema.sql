@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS member (
     uName VARCHAR(100) NOT NULL,
     uPwd VARCHAR(100) NOT NULL,
     uEmail VARCHAR(100) NOT NULL UNIQUE,
-    uImage VARCHAR(100)
+    uImage VARCHAR(100),
+    provider VARCHAR(100),           -- ✅ 소셜 로그인 제공자
+    provider_id VARCHAR(100)         -- ✅ 소셜 사용자 고유 ID
 );
 
 CREATE TABLE IF NOT EXISTS diary (

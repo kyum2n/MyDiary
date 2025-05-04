@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "member")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -13,23 +14,24 @@ public class Member {
 
     @Id
     @Column(name = "uid")
-    private String uId; // 수동 지정, @GeneratedValue 제거
+    private String uId;
 
     @Column(name = "uemail", nullable = false, unique = true)
     private String uEmail;
-
-    @Column(name = "upwd", nullable = false)
-    private String uPwd;
-
+    
     @Column(name = "uname")
     private String uName;
-
+    
+    @Column(name = "upwd")
+    private String uPwd;
+    
     @Column(name = "uimage")
     private String uImage;
 
-    @Transient
+    // ✅ 소셜 로그인용 필드 추가
+    @Column(name = "provider")
     private String provider;
 
-    @Transient
+    @Column(name = "provider_id")
     private String providerId;
 }

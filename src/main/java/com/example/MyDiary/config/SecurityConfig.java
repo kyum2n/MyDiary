@@ -31,10 +31,10 @@ public class SecurityConfig {
             )
             .userDetailsService(userDetailsService)
             .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/login", "/login/**", "/logout-success").permitAll()
-            .requestMatchers("/css/**", "/js/**", "/error").permitAll()
-                .anyRequest().authenticated()  // 반드시 authorize 설정의 마지막
-            )
+            .requestMatchers("/", "/intro", "/login", "/login/**", "/logout-success").permitAll()
+            .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
+            .anyRequest().authenticated()
+        )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/authentication")
@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
             );
-    
+
         return http.build();
     }
 }
