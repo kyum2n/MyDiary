@@ -20,7 +20,7 @@ public class OAuthAttributes {
     // 사용자 정보 저장용 객체 생성
     @Builder
     public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey,
-                           String name, String email, String profileImage, String providerId) {
+                            String name, String email, String profileImage, String providerId) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.name = name;
