@@ -19,12 +19,15 @@
             <ul>
                 <li><a href="#">마이 페이지</a></li>
                 <li><a href="#">내 프로필 보기</a></li>
+                
+                <!-- 로그아웃 버튼 (CSRF 토큰 포함) -->
                 <li>    
                     <form th:action="@{/logout}" method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit">로그아웃</button>
                     </form>
                 </li>
+
                 <li>
                     <div style="height: 30px;width: 30px;background-color: aqua;border-radius: 50%;"></div>
                 </li>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MyDiary - 환영합니다</title>
-    <link rel="stylesheet" th:href="@{/css/intro.css}">
+    <link rel="stylesheet" th:href="@{/css/intro.css}"> <!-- Thymeleaf용 -->
     <link rel="stylesheet" href="/css/intro.css"> <!-- 일반 경로용 -->
 </head>
 <body>
@@ -11,19 +11,22 @@
     <h1>환영합니다!</h1>
     <p class="subtitle">당신의 일상을 기록해보세요. MyDiary에 오신 걸 환영합니다.</p>
 
+    <!-- 다이어리 책 형태 UI -->
     <div class="book-box">
         <div class="book-cover">
             <h2>MyDiary</h2>
 
+            <!-- 이미지 삽입 (폴라로이드 느낌) -->
             <div class="photo-stack">
                 <img src="/img/welcome.png" alt="폴라로이드 사진">
             </div>
-
+            <!-- 로그인 버튼 -->
             <a th:href="@{/login}" href="/login" class="book-login">로그인</a>
         </div>
         <div class="book-spine"></div>
     </div>
 
+    <!-- 기능 설명 -->
     <ul class="features">
         <li>✔ 일상 기록 및 사진 저장</li>
         <li>✔ 소셜 로그인으로 간편하게 시작</li>
@@ -31,6 +34,7 @@
     </ul>
 </div>
 
+<!-- JS: 커버 높이에 맞춰 책 옆면 높이 조정 -->
 <script>
     window.addEventListener('DOMContentLoaded', () => {
         const cover = document.querySelector('.book-cover');

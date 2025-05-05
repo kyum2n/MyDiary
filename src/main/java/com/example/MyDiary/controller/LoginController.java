@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
+    // 로그인 페이지
     @GetMapping("/login")
     public String loginPage(HttpServletRequest request, Model model) {
         if (request.getParameter("error") != null) {
@@ -18,11 +19,12 @@ public class LoginController {
             model.addAttribute("message", "성공적으로 로그아웃되었습니다.");
         }
 
-        return "login"; // templates/login.html
+        return "login"; // login.html
     }
 
+    // 로그아웃 성공 페이지
     @GetMapping("/logout-success")
     public String logoutSuccess() {
-        return "logout-success"; // templates/logout-success.html
+        return "logout-success"; // logout-success.html
     }
 }
