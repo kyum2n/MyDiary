@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <title>MyDiary - 환영합니다</title>
     <link rel="stylesheet" th:href="@{/css/intro.css}">
+    <link rel="stylesheet" href="/css/intro.css"> <!-- 일반 경로용 -->
 </head>
 <body>
 <div class="intro-container">
     <h1>환영합니다!</h1>
     <p class="subtitle">당신의 일상을 기록해보세요. MyDiary에 오신 걸 환영합니다.</p>
-    
-    <img src="/img/welcome.png" alt="다이어리 이미지" class="welcome-img">
 
-    <a th:href="@{/login}" class="login-button">로그인</a>
+    <div class="book-box">
+        <div class="book-cover">
+            <h2>MyDiary</h2>
+
+            <div class="photo-stack">
+                <img src="/img/welcome.png" alt="폴라로이드 사진">
+            </div>
+
+            <a th:href="@{/login}" href="/login" class="book-login">로그인</a>
+        </div>
+        <div class="book-spine"></div>
+    </div>
 
     <ul class="features">
         <li>✔ 일상 기록 및 사진 저장</li>
@@ -20,5 +30,13 @@
         <li>✔ 캘린더로 한눈에 정리</li>
     </ul>
 </div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const cover = document.querySelector('.book-cover');
+        const spine = document.querySelector('.book-spine');
+        spine.style.height = cover.offsetHeight + 'px';
+    });
+</script>
 </body>
 </html>
