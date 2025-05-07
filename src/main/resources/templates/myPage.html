@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://kit.fontawesome.com/6f494923fa.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <nav>
+            <ul>
+                <li><a th:href="@{myPage}">마이페이지</a></li>
+
+                <li><a th:href="@{myProfile}">내 프로필</a></li>
+                <li>
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <button type="submit" class="logout-button">
+                            로그아웃
+                        </button>
+                    </form>
+                </li>
+                <li><img src="/image/defaultProfileImage.webp" alt="Me" id="me"></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="cal-map">
+        <div id="calORmap">
+            <button id="calendarB" class="cmtab activemp">달력</button>
+            <button id="mapB" class="cmtab">지도</button>
+        </div>
+        <div id="calendar" class="cmcon activemp">
+            <div id="calendar-con">
+                <button id="prev-month"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 id="calendar-title">2025년 5월</h2>
+                <button id="next-month"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <table id="calendar-grid">
+                <thead>
+                    <tr id="calendar-weekdays">
+                        <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+        <div id="map" class="cmcon">ㅈㄷㅈㅂㄱㅂㅈㄷㄱㄷㅈㄱㄷㅈㅂㄷㄱㅈㅂㄷㄱㅈㅂㄱㅂㅈㄷㄱ</div>
+    </section>
+    <section id="content">
+        <div class="grid">
+            <div class="grid-sizer"></div>
+            <div class="gutter-sizer"></div>
+        </div>
+        <button id="load-more">더보기</button>
+        <div id="end-message">더 이상 항목이 없습니다.</div>
+    </section>
+    <section id="modal-page">
+        <div id="modal-otherpage"></div>
+        <button id="close-modal"><i class="fa-solid fa-xmark" style="color: #ffffff;"></i></button>
+        <div id="modal">
+            <img id="modal-image"
+                src="https://plus.unsplash.com/premium_photo-1717529136642-269beec93a32?q=80&w=1003&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="모달 이미지">
+            <div class="modal-desbox">
+                <h2 id="modal-title">제목</h2>
+                <p id="modal-description">내용</p>
+            </div>
+        </div>
+        <div class="how-to-close">
+            <p>팝업 화면 밖을 클릭하여 팝업을 끄세요.</p>
+        </div>
+    </section>
+    <button id="write-today"><i class="fa-solid fa-pen-nib" style="color: #ffffff;"></i></button>
+    <footer></footer>
+    <script src="@{/js/myPage.js}"></script>
+</body>
+
+</html>

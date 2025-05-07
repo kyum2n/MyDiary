@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일기 편집</title>
+    <style>
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        header, .header-nav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+        header #me {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px;
+        }
+        .logout-button {
+            background: none;
+            border: none;
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-button span {
+            display: inline;
+            font-size: 16px;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #date-now {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #current-image #imagePreview {
+            display:none;
+            max-width: 300px;
+        }
+        footer {
+            margin: 30px;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://cdn.tiny.cloud/1/tia0di1rcb7ruxx6kprwpbivngcd8z8tk0oqsqyyo6y0h8zl/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <nav class="header-nav">
+            <a th:href="@{myPage}">마이페이지</a>
+            <a th:href="@{myProfile}">내 프로필</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="logout-button">
+                    로그아웃
+                </button>
+            </form>
+
+            <img src="/image/defaultProfileImage.webp" alt="Me" id="me">
+        </nav>
+    </header>
+    <main>
+        <form action="/diary/edit" method="post" enctype="multipart/form-data" th:object="${diary}">
+            <input type="hidden" th:field="*{id}" />
+            <p><span id="date-now" name="date">date</span>의 일기 수정하기</p>
+            
+            <div id="diary-content">
+
+                <label for="title">제목</label>
+                <input th:field="*{title}" type="text" id="title" name="title" required>
+                <br>
+                <label for="date">날짜</label>
+                <input th:field="*{date}"  type="date" id="date" name="date" required>
+                <br>
+                <label for="content">내용</label>
+                <textarea th:field="*{content}" id="content" name="content" required></textarea>
+                <br>
+                <label for="location">위치</label>
+                <input th:field="*{location}"  type="text" id="location" name="location">
+                <br>
+                <label for="lastImage">기존 이미지</label>
+                <img id="lastImage" th:src="@{${diary.image}}" alt="기존 이미지" width="100">
+            </div>
+
+            <div id="image-attach">
+                <label>새 이미지</label>
+                <input type="file" name="image" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                <img id="preview" src="#" alt="미리보기" style="display:none;" width="100"/>
+            </div>
+
+            <button type="submit">저장</button>
+        </form>
+    </main>
+
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // 일기 내용 입력 필드
+        tinymce.init({
+            selector: '#content',
+            height: 240,
+            width: '100%',
+            plugins: [
+                'emoticons', 'image', 'link', 'lists',
+                'media', 'table', 'wordcount', 'code', 'charmap'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | numlist bullist | emoticons charmap | removeformat | code',
+            menubar: false,
+            branding: false,
+            setup: function(editor) {
+                editor.on('change', function () {
+                    document.getElementById('content').value = editor.getContent();
+                });
+            }
+        });
+        // 이미지 미리보기
+        function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

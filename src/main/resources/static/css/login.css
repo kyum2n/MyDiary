@@ -1,0 +1,97 @@
+body {
+    font-family: sans-serif;
+    background-color: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: #e0e0e0;
+    padding: 40px;
+    border-radius: 10px;
+    width: 500px;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-fields input[type="text"],
+.input-fields input[type="password"] {
+    width: 250px;
+    padding: 10px;
+}
+
+.login-btn {
+    height: 82px;
+    padding: 0 20px;
+    background-color: #888;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.links {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.social-section {
+    margin-top: 30px;
+}
+
+.social-section h4 {
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.circle-btn {
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.kakao {
+    background-color: #f7e600;
+    color: black;
+}
+
+.naver {
+    background-color: #2db400;
+    color: white;
+}
+
+.google {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #ccc;
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mydiary.repository.MemberMapper">
+
+    <!-- 소셜/일반 사용자 등록 (소셜은 uPwd에 "social" 같은 더미값 지정 필요) -->
+    <insert id="insertMember" parameterType="com.example.mydiary.entity.Member">
+        INSERT INTO member (uId, uName, uPwd, uEmail, uImage, provider, providerId)
+        VALUES (#{uId}, #{uName}, #{uPwd}, #{uEmail}, #{uImage}, #{provider}, #{providerId})
+    </insert>
+
+    <!-- 일반 로그인: 아이디(uId)로 사용자 조회 -->
+    <select id="findByuId" resultType="com.example.mydiary.entity.Member">
+        SELECT * FROM member WHERE uId = #{uId}
+    </select>
+
+    <!-- 소셜 로그인: 이메일 기준 사용자 조회 -->
+    <select id="findByEmail" resultType="com.example.mydiary.entity.Member">
+        SELECT * FROM member WHERE uEmail = #{uEmail}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{../css/login.css}">
+</head>
+<body>
+<div class="login-container">
+    <h2>로그인</h2>
+    
+    <!-- 일반 로그인 -->
+    <form th:action="@{/authentication}" method="post">
+        <!-- CSRF 토큰 (보안용) -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="login-input-group">
+            <div class="input-fields">
+                <input type="text" name="usernameInput" placeholder="아이디 입력" required>
+                <input type="password" name="passwordInput" placeholder="비밀번호 입력" required>
+            </div>
+            <button type="submit" class="login-btn">로그인</button>
+        </div>
+    </form>
+    <!-- 부가 링크 -->
+    <div class="links">
+        <a href="#">아이디/비밀번호 찾기</a> |
+        <a href="/join">회원가입</a>
+    </div>
+    <!--소셜 로그인 창으로 이동-->
+    <div class="social-section">
+        <h4>SNS 로그인</h4>
+        <div class="social-buttons">
+            <a th:href="@{/oauth2/authorization/kakao}" class="circle-btn kakao">KaKao</a>
+            <a th:href="@{/oauth2/authorization/naver}" class="circle-btn naver">Naver</a>
+            <a th:href="@{/oauth2/authorization/google}" class="circle-btn google">Google</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

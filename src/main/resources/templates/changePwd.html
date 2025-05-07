@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 변경 | MyDiary</title>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: white;
+            border-bottom: 4px solid #2684ff;
+            padding: 15px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav {
+            background-color: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+        }
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .form-box {
+            background-color: white;
+            padding: 40px 60px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 420px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-row label {
+            width: 130px;
+            font-weight: bold;
+        }
+        .form-row input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .success {
+            color: green;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ccc;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 80px;
+            background-color: #e8e8e8;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+    <script>
+        function validatePwdChange() {
+            let currentPwd = document.getElementById("currentPwd").value;
+            let newPwd = document.getElementById("newPwd").value;
+            let confirmPwd = document.getElementById("confirmPwd").value;
+            let newPwdMsg = document.getElementById("newPwdMsg");
+            let confirmPwdMsg = document.getElementById("confirmPwdMsg");
+            let valid = true;
+            if (!/^(?=.*[!@#$%^&*()_+=-]).{8,15}$/.test(newPwd)) {
+                newPwdMsg.textContent = "새 비밀번호는 8~15자이며 특수문자를 포함해야 합니다.";
+                newPwdMsg.className = "error";
+                valid = false;
+            } else if (currentPwd === newPwd) {
+                newPwdMsg.textContent = "기존 비밀번호와 같을 수 없습니다.";
+                newPwdMsg.className = "error";
+                valid = false;
+            } else {
+                newPwdMsg.textContent = "사용 가능한 새 비밀번호입니다.";
+                newPwdMsg.className = "success";
+            }
+            if (newPwd !== confirmPwd || confirmPwd === "") {
+                confirmPwdMsg.textContent = "새 비밀번호가 일치하지 않습니다.";
+                confirmPwdMsg.className = "error";
+                valid = false;
+            } else {
+                confirmPwdMsg.textContent = "비밀번호가 일치합니다.";
+                confirmPwdMsg.className = "success";
+            }
+            return valid;
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+    </header>
+    <nav>  
+        <div class="nav-left">
+            <div>내 게시물들 </div>
+            <div>회원프로필</div>
+        </div>
+        <div class="nav-right">
+            <div>[아이디]님 어서오세요</div>
+            <div><img src="/images/profile.png" alt="프로필" width="30"></div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-box">
+            <h2>비밀번호 변경</h2>
+            <form th:action="@{/change-password}" method="post" onsubmit="return validatePwdChange()">
+                <div class="form-row">
+                    <label for="currentPwd">원래 비밀번호</label>
+                    <input type="password" id="currentPwd" name="currentPwd" required>
+                </div>
+                <div class="form-row">
+                    <label for="newPwd">새 비밀번호</label>
+                    <input type="password" id="newPwd" name="newPwd" required oninput="validatePwdChange()">
+                </div>
+                <div class="form-row">
+                    <small id="newPwdMsg"></small>
+                </div>
+                <div class="form-row">
+                    <label for="confirmPwd">새 비밀번호 확인</label>
+                    <input type="password" id="confirmPwd" name="confirmPwd" required oninput="validatePwdChange()">
+                </div>
+                <div class="form-row">
+                    <small id="confirmPwdMsg"></small>
+                </div>
+                <button type="submit">비밀번호 변경 완료</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>날씨, 온도, 미세먼지</footer>
+
+</body>
+</html>

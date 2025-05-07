@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 프로필</title>
+    <style>
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        header, .header-nav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+        header #me {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px;
+        }
+        .logout-button {
+            background: none;
+            border: none;
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-button span {
+            display: inline;
+            font-size: 16px;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        .profile-box {
+            background-color: #f0f0f0;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-width: 300px;
+        }
+        .profile-box span {
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .profile-box button {
+            margin-top: 10px;
+        }
+        .profile-box .my-profile-title {
+            display: inline-block;
+        }
+        .profile-box .profile-image {
+            position: relative;
+            /* background-color: #333; */
+            height: 150px;
+        }
+        .profile-image #uImage {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+            position: absolute;
+            top: 0;
+            right: 100px;
+            
+        }
+        .profile-image #changeImage {
+            position: absolute;
+            top: 75px;
+            right: 100px;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            object-fit: cover;
+        }
+        #changeImage #change-icon {
+            position: relative;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        footer {
+            margin: 30px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <nav class="header-nav">
+            <a th:href="@{myPage}">마이페이지</a>
+            <a th:href="@{myProfile}">내 프로필</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="logout-button">
+                    로그아웃
+                </button>
+            </form>
+            <img src="/image/defaultProfileImage.webp" alt="Me" id="me">
+        </nav>
+    </header>
+    <main>
+        <div class="profile-box">
+            <h2 class="my-profile-title">내 프로필</h2>
+
+            <div class="profile-image">
+                <img id="uImage" th:src="@{${user.uImage}}" alt="프로필 사진을 불러올 수 없습니다." name="uImage"/>
+                <form id="uploadNewUImage" action="/myProfile/uploadUImage" method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="file" id="imageInput" name="uImage" accept="image/*" style="display: none;">
+                    <button id="changeImage" type="button">
+                        <img id="change-icon" src="/image/pencil_10151125.png" alt="이미지 변경">
+                    </button>
+                </form>
+            </div>
+            
+            <span>이름</span> <span th:text="${user.uName}">이름을 불러올 수 없습니다.</span> <br>
+            <span>아이디</span> <span th:text="${user.uId}">아이디를 불러올 수 없습니다.</span> <br>
+            <span>이메일</span> <span th:text="${user.uEmail}">이메일을 불러올 수 없습니다.</span> <br>
+            <span>비밀번호</span> <span  th:text="${user.uPwd}">비밀번호를 불러올 수 없습니다.</span>
+            
+            <button type="button" onclick="location.href='/changePwd'">비밀번호 변경</button>
+        </div>
+    </main>
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
