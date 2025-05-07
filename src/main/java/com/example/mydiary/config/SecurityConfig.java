@@ -10,6 +10,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.example.mydiary.service.CustomOAuth2UserService;
 
+import com.example.mydiary.security.CustomLogoutSuccessHandler;
+import com.example.mydiary.service.CustomOAuth2UserService;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -30,7 +33,8 @@ public class SecurityConfig {
                                                 .requestMatchers(
                                                                 "/", "/intro", "/login", "/login/**", "/logout-success",
                                                                 "/join", "/check-id", "/logout-kakao",
-                                                                "/css/**", "/js/**", "/img/**", "/image/**", "/error")
+                                                                "/css/**", "/js/**", "/img/**", "/images/**",
+                                                                "/image/**", "/error")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
@@ -47,8 +51,9 @@ public class SecurityConfig {
                                                 .defaultSuccessUrl("/main", true))
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
-                                                .logoutSuccessUrl("/logout-success?provider=custom")
+                                                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                                                 .clearAuthentication(true)
+                                                .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID"));
 
                 return http.build();
