@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @AllArgsConstructor
 public class HomeController {
     // 로그인 전 인트로 페이지
+    // 로그인 전 인트로 페이지
 
     @GetMapping("/")
     public String toHome() {
