@@ -69,11 +69,8 @@
         <nav class="header-nav">
             <a th:href="@{myPage}">마이페이지</a>
             <a th:href="@{myProfile}">내 프로필</a>
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button type="submit" class="logout-button">
-                    로그아웃
-                </button>
-            </form>
+            
+            <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
 
             <img src="/image/defaultProfileImage.webp" alt="Me" id="me">
         </nav>
@@ -110,12 +107,16 @@
             <button type="submit">저장</button>
         </form>
     </main>
-
+    
+    
     <footer>
         <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
     </footer>
-
-    <script src="/js/main.js"></script>
+    
+    <!-- CSRF 토큰 -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    
+    <script th:src="@{/js/main.js}"></script>
     <script>
         // 일기 내용 입력 필드
         tinymce.init({
@@ -142,6 +143,32 @@
             const preview = document.getElementById('preview');
             preview.src = URL.createObjectURL(file);
             preview.style.display = 'block';
+        }
+
+        // 로그아웃
+        function handleSocialLogout() {
+            // 네이버 로그아웃 팝업
+            const naverPopup = window.open("https://nid.naver.com/nidlogin.logout", "naverLogout", "width=1,height=1");
+    
+            setTimeout(() => {
+                try { if (naverPopup) naverPopup.close(); } catch (e) {}
+    
+                const csrfToken = document.querySelector('input[name="_csrf"]').value;
+    
+                // 폼 생성하여 서버로 POST 전송
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/logout';
+    
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_csrf';
+                csrfInput.value = csrfToken;
+    
+                form.appendChild(csrfInput);
+                document.body.appendChild(form);
+                form.submit();
+            }, 300);
         }
     }
 </script>

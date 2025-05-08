@@ -1,5 +1,5 @@
 
-
+// 마이 페이지 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     const loadMoreBtn = document.getElementById('load-more');
@@ -56,11 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const placeholder = document.createElement('div');
             placeholder.className = 'grid-item placeholder';
 
-            // ✅ 여기서 크기 부여는 placeholder에!
+            // 여기서 크기 부여는 placeholder에!
             // placeholder.style.width = getRandomInt(220, 300) + 'px';
             placeholder.style.height = getRandomInt(180, 240) + 'px';
 
-            // ✅ spinner는 크기 고정된 정중앙 요소
+            // spinner는 크기 고정된 정중앙 요소
             const spinner = document.createElement('div');
             spinner.className = 'loading-spinner';
 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(placeholder);
             msnry.appended(placeholder);
 
-            // 2. 이미지 로드 후 교체
+            // 이미지 로드 후 교체
             const img = new Image();
             img.src = entry.image;
             img.alt = entry.title;
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 작성자의 게시물만 불러오기
     // JSON 데이터 로딩
-    fetch('../static/data/dummydiary.json')
+    fetch('/data/dummydiary.json')
         .then(res => res.json())
         .then(data => {
             const myPosts = data.filter(post => post.authorId === currentUserId);
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const calendarBody = document.getElementById('calendar-body');
         calendarBody.innerHTML = ''; // 기존 내용 초기화
 
-        // const todayStr = new Date().toISOString().split('T')[0]; 
+        // const todayStr = new Date().toISOString().split('T')[0];
         function getTodayStringLocal() {
             const today = new Date();
             const yyyy = today.getFullYear();
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dd = String(today.getDate()).padStart(2, '0');
             return `${yyyy}-${mm}-${dd}`;
         }
-        const todayStr = getTodayStringLocal(); // '2025-04-01' 형식        
+        const todayStr = getTodayStringLocal(); // 'yyyy-MM-dd' 형식
 
         const firstDay = new Date(year, month, 1);
         const lastDate = new Date(year, month + 1, 0).getDate();
@@ -228,9 +228,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 클릭 이벤트
                 td.addEventListener('click', () => {
                     if (post) {
-                        showModal(post); // 📸 모달 열기
+                        showModal(post); // 모달 열기
                     } else {
-                        window.location.href = `/newDiary?date=${dateStr}`; // ✍️ 작성화면 이동
+                        window.location.href = `/newDiary?date=${dateStr}`; // 작성화면 이동
                     }
                 });
 
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('calendar-title').textContent = `${year}년 ${month + 1}월`;
 
         posts.forEach(post => {
-            const dateStr = post.date; // '2025-04-01'
+            const dateStr = post.date; // 'yyyy-MM-dd'
             const calendarCell = document.querySelector(`[data-date="${dateStr}"]`);
 
             if (calendarCell) {
@@ -279,29 +279,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // 지도 만들기
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+
+    // 지도 초기화
+    function initMap() {
+        const mapOptions = {
+            center: { lat: 37.5665, lng: 126.9780 }, // 서울 좌표
+            zoom: 10,
+        };
+
+        const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        // 예시 마커
+        const marker = new google.maps.Marker({
+            position: { lat: 37.5665, lng: 126.9780 },
+            map: map,
+            title: "서울",
+        });
+    }
+    // 전역적으로 등록
+    window.initMap = initMap;
 });

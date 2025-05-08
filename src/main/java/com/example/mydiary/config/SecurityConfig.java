@@ -11,7 +11,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import com.example.mydiary.service.CustomOAuth2UserService;
 
 import com.example.mydiary.security.CustomLogoutSuccessHandler;
-import com.example.mydiary.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 

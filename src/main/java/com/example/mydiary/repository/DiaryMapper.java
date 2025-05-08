@@ -1,5 +1,6 @@
 package com.example.mydiary.repository;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -14,6 +15,9 @@ public interface DiaryMapper {
 
     // 특정 일기 조회
     Diary selectDiaryById(@Param("id") int id);
+
+    // 특정 날짜에 작성된 일기 조회
+    Diary findByDateAndUId(@Param("date") Date date, @Param("uId") String uId);
 
     // 일기 등록
     void insertDiary(Diary diary);

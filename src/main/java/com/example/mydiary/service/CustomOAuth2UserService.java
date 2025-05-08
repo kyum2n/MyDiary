@@ -28,28 +28,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("🔴 loadUser() 진입 완료: " + registrationId);
+        System.out.println("loadUser() 진입 완료: " + registrationId);
 
         OAuth2User oAuth2User;
         try {
             oAuth2User = super.loadUser(userRequest);
         } catch (Exception e) {
-            System.out.println("❌ super.loadUser() 실패: " + e.getMessage());
+            System.out.println("super.loadUser() 실패: " + e.getMessage());
             throw e;
         }
 
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        System.out.println("🟡 registrationId = " + registrationId);
-        System.out.println("🟡 userNameAttributeName = " + userNameAttributeName);
-        System.out.println("🟡 원시 attributes: " + oAuth2User.getAttributes());
+        System.out.println("registrationId = " + registrationId);
+        System.out.println("userNameAttributeName = " + userNameAttributeName);
+        System.out.println("원시 attributes: " + oAuth2User.getAttributes());
 
         OAuthAttributes attributes;
         try {
             attributes = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
         } catch (Exception e) {
-            System.out.println("❌ OAuthAttributes.of() 실패: " + e.getMessage());
+            System.out.println("OAuthAttributes.of() 실패: " + e.getMessage());
             throw e;
         }
 
@@ -57,7 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         try {
             member = saveOrUpdate(attributes);
         } catch (Exception e) {
-            System.out.println("❌ saveOrUpdate() 실패: " + e.getMessage());
+            System.out.println("saveOrUpdate() 실패: " + e.getMessage());
             throw e;
         }
 
@@ -71,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         userAttributes.put("provider", registrationId);
         userAttributes.putIfAbsent("id", attributes.getProviderId());
 
-        // ✅ 세션에 provider 저장 (logout-success.html에서 분기용)
+        // 세션에 provider 저장 (logout-success.html에서 분기용)
         request.getSession().setAttribute("provider", registrationId);
 
         try {
@@ -80,7 +80,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     userAttributes,
                     userNameAttributeName);
         } catch (Exception e) {
-            System.out.println("❌ DefaultOAuth2User 생성 실패: " + e.getMessage());
+            System.out.println("DefaultOAuth2User 생성 실패: " + e.getMessage());
             throw e;
         }
     }

@@ -25,7 +25,7 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
-        System.out.println("🔴 OAuthAttributes.of invoked with: " + registrationId);
+        System.out.println("OAuthAttributes.of invoked with: " + registrationId);
         if ("naver".equals(registrationId)) {
             return ofNaver(attributes);
         } else if ("kakao".equals(registrationId)) {
@@ -66,9 +66,9 @@ public class OAuthAttributes {
                 : "kakao_" + attributes.get("id") + "@kakao.com";
         String profileImage = profile != null ? (String) profile.get("profile_image_url") : "default.png";
 
-        System.out.println("🔥 카카오 nickname: " + nickname);
-        System.out.println("🔥 카카오 email: " + email);
-        System.out.println("🔥 카카오 providerId: " + attributes.get("id"));
+        System.out.println("카카오 nickname: " + nickname);
+        System.out.println("카카오 email: " + email);
+        System.out.println("카카오 providerId: " + attributes.get("id"));
 
         return OAuthAttributes.builder()
                 .name(nickname)

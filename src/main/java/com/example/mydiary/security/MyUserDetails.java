@@ -24,7 +24,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return member.getUPwd(); // 비밀번호
+        return member.getUPwd();
     }
 
     @Override

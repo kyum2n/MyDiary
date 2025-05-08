@@ -1,7 +1,16 @@
 package com.example.mydiary.controller;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
@@ -15,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,6 +69,28 @@ public class UserController {
         String uId = principal.getName();
         userService.updateUImage(uId, uImage);
         return "redirect:/myProfile";
+    }
+
+    // 이미지 파일 서버에 저장
+    @GetMapping("/uploads/profile/{filename:.+}")
+    public ResponseEntity<Resource> serveProfileImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get("src/main/resources/static/uploads/profile/").resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath))
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     // 비밀번호 변경 페이지로 이동

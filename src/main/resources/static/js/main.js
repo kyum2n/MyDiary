@@ -1,10 +1,11 @@
-// 새 일기 작성 시 현재 날짜 불러오기
+// 현재 날짜 불러오기
 document.addEventListener("DOMContentLoaded", function () {
     const today = new Date();
     const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
     document.getElementById("date-now").textContent = today.toLocaleDateString("ko-KR", options);
 });
 
+// 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     const loadMoreBtn = document.getElementById('load-more');
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // JSON 데이터 로딩
-    fetch('../static/data/dummydiary.json')
+    fetch('/data/dummydiary.json')
         .then(res => res.json())
         .then(data => {
             allData = data;

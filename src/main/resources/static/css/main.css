@@ -48,7 +48,6 @@ header #me {
     margin: 10px;
 }
 
-/* 로그아웃 버튼 */
 .logout-button {
     background: none;
     border: none;
@@ -483,4 +482,6 @@ header #me {
 }
 
 /* 지도 만들기 */
-#map {}
+#map {
+    height: 500px;
+}

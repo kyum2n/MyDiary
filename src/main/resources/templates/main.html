@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
-    <script src="https://kit.fontawesome.com/6f494923fa.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -18,10 +14,10 @@
         <nav>
             <ul>
                 <li><a th:href="@{myPage}">마이페이지</a></li>
-
+                
                 <li><a th:href="@{myProfile}">내 프로필</a></li>
                 <li>
-                    <button onclick="handleSocialLogout()">로그아웃</button>
+                    <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
                 </li>
                 <li><img src="/image/defaultProfileImage.webp" alt="Me" id="me"></li>
             </ul>
@@ -40,8 +36,8 @@
         <button id="close-modal"><i class="fa-solid fa-xmark" style="color: #ffffff;"></i></button>
         <div id="modal">
             <img id="modal-image"
-                src="https://plus.unsplash.com/premium_photo-1717529136642-269beec93a32?q=80&w=1003&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="모달 이미지">
+            src="https://plus.unsplash.com/premium_photo-1717529136642-269beec93a32?q=80&w=1003&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="모달 이미지">
             <div class="modal-desbox">
                 <h2 id="modal-title">제목</h2>
                 <p id="modal-description">내용</p>
@@ -51,23 +47,30 @@
             <p>팝업 화면 밖을 클릭하여 팝업을 끄세요.</p>
         </div>
     </section>
-    <footer></footer>
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
     <!-- CSRF 토큰 -->
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://kit.fontawesome.com/6f494923fa.js" crossorigin="anonymous"></script>
 
-    <script src="../static/js/mainryu.js"></script>
+    <script th:src="@{/js/main.js}"></script>
 
-    <!-- 로그아웃 -->
     <script>
+        // 로그아웃
         function handleSocialLogout() {
             // 네이버 로그아웃 팝업
             const naverPopup = window.open("https://nid.naver.com/nidlogin.logout", "naverLogout", "width=1,height=1");
-    
+            
             setTimeout(() => {
                 try { if (naverPopup) naverPopup.close(); } catch (e) {}
-    
+                
                 const csrfToken = document.querySelector('input[name="_csrf"]').value;
-    
+                
                 // 폼 생성하여 서버로 POST 전송
                 const form = document.createElement('form');
                 form.method = 'POST';
@@ -84,7 +87,6 @@
             }, 300);
         }
     </script>
-    <script src="@{/js/main.js}"></script>
 </body>
 
 </html>

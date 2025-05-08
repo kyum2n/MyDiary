@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,11 @@ public class DiaryController {
     @Value("${upload.path}")
     private String uploadPath;
 
+    // 구글 맵 API 키 설정
+    @Value("${google.map.api.key}")
+    private String googleMapApiKey;
+
+    // 생성자 주입
     public DiaryController(DiaryService diaryService) {
         this.diaryService = diaryService;
     }
@@ -40,6 +46,36 @@ public class DiaryController {
         List<Diary> diaries = diaryService.getAllDiaries(uId);
         model.addAttribute("diaries", diaries);
         return "myPage";
+    }
+
+    // 구글 API 키로 지도 표시
+    @GetMapping("/map")
+    public String showMap(Model model) {
+        model.addAttribute("googleMapApiKey", googleMapApiKey);
+        return "myPage";
+    }
+
+    // 날짜 선택 후 일기 조회 및 작성
+    @GetMapping("/calendar/{date}")
+    public String diaryByDate(@PathVariable("date") String date, Model model, Principal principal) {
+        String uId = principal.getName();
+
+        try {
+            // 타입 변환
+            java.sql.Date sqlDate = java.sql.Date.valueOf(date); // "yyyy-MM-dd" 형식
+
+            Diary diary = diaryService.getDiaryByDateAndUser(sqlDate, uId);
+
+            if (diary != null) {
+                model.addAttribute("diary", diary);
+                return "editDiary";
+            } else {
+                return "redirect:/newDiary";
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return "error";
+        }
     }
 
     // 새 일기 추가

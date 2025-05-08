@@ -1,5 +1,6 @@
 package com.example.mydiary.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,6 +27,12 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public Diary getDiaryById(int id) {
         return diaryMapper.selectDiaryById(id);
+    }
+
+    // 특정 날짜에 작성된 일기 조회
+    @Override
+    public Diary getDiaryByDateAndUser(Date date, String uId) {
+        return diaryMapper.findByDateAndUId(date, uId);
     }
 
     // 일기 등록

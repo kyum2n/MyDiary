@@ -19,6 +19,14 @@
         FROM diary
         WHERE id = #{id}
     </select>
+    
+    <!-- 특정 날짜에 작성된 일기 조회 -->
+    <select id="findByDateAndUId" resultType="com.example.mydiary.entity.Diary">
+        SELECT *
+        FROM diary
+        WHERE date = #{date}
+        AND uId = #{uId}
+    </select>
 
     <!-- 일기 등록 -->
     <insert id="insertDiary">
