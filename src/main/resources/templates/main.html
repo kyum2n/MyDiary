@@ -19,7 +19,7 @@
                 <li>
                     <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
                 </li>
-                <li><img src="/image/defaultProfileImage.webp" alt="Me" id="me"></li>
+                <li><img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/></li>
             </ul>
         </nav>
     </header>
@@ -60,33 +60,7 @@
 
     <script th:src="@{/js/main.js}"></script>
 
-    <script>
-        // 로그아웃
-        function handleSocialLogout() {
-            // 네이버 로그아웃 팝업
-            const naverPopup = window.open("https://nid.naver.com/nidlogin.logout", "naverLogout", "width=1,height=1");
-            
-            setTimeout(() => {
-                try { if (naverPopup) naverPopup.close(); } catch (e) {}
-                
-                const csrfToken = document.querySelector('input[name="_csrf"]').value;
-                
-                // 폼 생성하여 서버로 POST 전송
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/logout';
-    
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_csrf';
-                csrfInput.value = csrfToken;
-    
-                form.appendChild(csrfInput);
-                document.body.appendChild(form);
-                form.submit();
-            }, 300);
-        }
-    </script>
+    <script th:src="@{/js/share.js}"></script>
 </body>
 
 </html>

@@ -33,7 +33,8 @@ public class SecurityConfig {
                                                                 "/", "/intro", "/login", "/login/**", "/logout-success",
                                                                 "/join", "/check-id", "/logout-kakao",
                                                                 "/css/**", "/js/**", "/img/**", "/images/**",
-                                                                "/image/**", "/error")
+                                                                "/image/**", "/error",
+                                                                "/findId", "/findPwd")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

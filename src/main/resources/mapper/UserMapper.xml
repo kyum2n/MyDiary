@@ -12,6 +12,11 @@
         FROM member
         WHERE uId = #{uId}
     </select>
+
+    <!-- 사용자 이메일 조회 -->
+    <select id="findByEmail" parameterType="string" resultType="com.example.mydiary.entity.Member">
+        SELECT * FROM member WHERE u_email = #{email}
+    </select>
     
     <!-- 사용자 프로필 사진 변경-->
     <update id="updateUImage">

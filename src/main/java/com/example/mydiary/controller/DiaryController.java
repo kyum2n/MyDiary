@@ -1,14 +1,20 @@
 package com.example.mydiary.controller;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.mydiary.entity.Diary;
 import com.example.mydiary.service.DiaryService;
+import com.example.mydiary.service.UserService;
 
 @Controller
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final UserService userService;
 
     // 이미지 저장 경로 설정
     @Value("${upload.path}")
@@ -35,16 +43,20 @@ public class DiaryController {
     private String googleMapApiKey;
 
     // 생성자 주입
-    public DiaryController(DiaryService diaryService) {
+    public DiaryController(DiaryService diaryService, UserService userService) {
         this.diaryService = diaryService;
+        this.userService = userService;
+
     }
 
     // 마이 페이지로 이동
     @GetMapping("/myPage")
     public String myPage(Model model, Principal principal) {
         String uId = principal.getName();
+        com.example.mydiary.entity.Member user = userService.findUserByUId(uId);
         List<Diary> diaries = diaryService.getAllDiaries(uId);
         model.addAttribute("diaries", diaries);
+        model.addAttribute("user", user);
         return "myPage";
     }
 
@@ -56,25 +68,32 @@ public class DiaryController {
     }
 
     // 날짜 선택 후 일기 조회 및 작성
-    @GetMapping("/calendar/{date}")
-    public String diaryByDate(@PathVariable("date") String date, Model model, Principal principal) {
+    @GetMapping("/api/diary/{date}")
+    public ResponseEntity<?> getDiaryByDate(@PathVariable("date") String date,
+            Principal principal) {
         String uId = principal.getName();
 
         try {
-            // 타입 변환
             java.sql.Date sqlDate = java.sql.Date.valueOf(date); // "yyyy-MM-dd" 형식
-
             Diary diary = diaryService.getDiaryByDateAndUser(sqlDate, uId);
+            Map<String, Object> result = new HashMap<>();
+            result.put("date", sqlDate.toString());
 
             if (diary != null) {
-                model.addAttribute("diary", diary);
-                return "editDiary";
+                result.put("id", diary.getId());
+                result.put("title", diary.getTitle());
+                result.put("content", diary.getContent());
+                result.put("imageUrl", diary.getImage() != null ? diary.getImage() : "/image/welcome.png");
             } else {
-                return "redirect:/newDiary";
+                result.put("id", null);
+                result.put("title", null);
+                result.put("content", null);
+                result.put("imageUrl", "/image/welcome.png");
             }
+            return ResponseEntity.ok(result);
+
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format");
         }
     }
 

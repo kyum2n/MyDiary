@@ -2,6 +2,7 @@ package com.example.mydiary.repository;
 
 import com.example.mydiary.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface MemberMapper {
@@ -15,4 +16,10 @@ public interface MemberMapper {
     // 회원가입 시 사용자 정보 저장
     void insertMember(Member member);
 
+    // 사용자 조회
+    String findUIdByEmail(String email);
+
+    Member selectUserByUId(String uId);
+
+    void updatePassword(@Param("uId") String uId, @Param("uPwd") String uPwd);
 }

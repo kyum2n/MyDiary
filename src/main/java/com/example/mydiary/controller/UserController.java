@@ -48,6 +48,12 @@ public class UserController {
 
         String uId = principal.getName();
         Member user = userService.findUserByUId(uId);
+
+        if (user == null) {
+            // 이메일 기준으로 소셜 로그인 사용자 조회 시도
+            user = userService.findUserByEmail(uId);
+        }
+
         if (user != null) {
             user.setUPwd("********");
             if (user.getUImage() == null || user.getUImage().isEmpty()) {

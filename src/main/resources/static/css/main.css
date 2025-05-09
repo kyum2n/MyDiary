@@ -1,3 +1,4 @@
+/* 공통 초기화 */
 * {
     margin: 0;
     padding: 0;
@@ -12,6 +13,7 @@ body {
     width: 100%;
 }
 
+/* Header */
 header {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -20,7 +22,6 @@ header {
 }
 
 header h1 {
-    margin: 0;
     padding: 20px;
     font-size: 24px;
 }
@@ -40,7 +41,7 @@ header nav ul li {
     align-items: center;
 }
 
-header #me {
+#me {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -48,28 +49,35 @@ header #me {
     margin: 10px;
 }
 
+/* Logout 버튼 */
 .logout-button {
     background: none;
     border: none;
-    color: inherit;
     font: inherit;
-    text-decoration: none;
     cursor: pointer;
 }
 
 .logout-button span {
-    display: inline;
     font-size: 16px;
 }
 
+/* 본문 콘텐츠 */
 #content {
-    /* background: #e24242; */
-    margin: 0 auto;
-    margin-bottom: 90px;
+    margin: 0 auto 90px;
     width: 800px;
-    /* display: none; */
 }
 
+/* 푸터 */
+footer {
+    margin-top: 80px;
+    background-color: #e8e8e8;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Masonry Grid */
 .grid {
     width: 100%;
     position: relative;
@@ -89,25 +97,23 @@ header #me {
     border-radius: 5px;
     margin-bottom: 10px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 }
+
 .grid-item:hover {
     transform: scale(1.03);
 }
 
 .grid-item img {
     display: block;
-    min-width: 100%;
-    max-width: 100%;
+    width: 100%;
 }
 
 .grid-item.placeholder {
-    position: relative;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
     background-size: 400% 100%;
     animation: shimmer 1.2s ease-in-out infinite;
-    overflow: hidden;
-    border-radius: 5px;
+    position: relative;
 }
 
 .loading-spinner {
@@ -117,30 +123,22 @@ header #me {
     width: 30px;
     height: 30px;
     transform: translate(-50%, -50%);
-    background-image: url('https://i.gifer.com/ZZ5H.gif');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    background: url('https://i.gifer.com/ZZ5H.gif') no-repeat center/contain;
 }
 
+/* Shimmer animation */
 @keyframes shimmer {
-    0% {
-        background-position: -400px 0;
-    }
-
-    100% {
-        background-position: 400px 0;
-    }
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
 }
 
+/* Load More Button */
 #load-more {
     position: fixed;
     bottom: -2%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 600px;
-    justify-content: center;
-    margin: 20px 0;
     height: 50px;
     background-color: #007bff;
     color: #fff;
@@ -162,61 +160,98 @@ header #me {
     font-style: italic;
 }
 
-
-/* 실질적 모달창 */
+/* === 통합 모달 === */
 #modal-page {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     z-index: 999;
-    /* background-color: rgba(255, 255, 255, 0.925); */
-    /* justify-content: center; */
-    /* align-items: center; */
+    justify-content: center;
+    align-items: center;
 }
 
-/* 모달 뒷배경/화면닫기용 */
+/* 모달 백그라운드 */
 #modal-otherpage {
-    /* display: none; */
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(29, 21, 21, 0.712);
-    /* justify-content: center; */
-    /* align-items: center; */
+    z-index: 998;
 }
 
-/* 보이는 모달창 */
+/* 모달 창 */
 #modal {
-    /* display: none; */
     position: fixed;
-    top: 50%;
-    left: 50%;
-    max-width: 600px;
-    height: auto;
-    min-height: 400px;
-    max-height: 80%;
-    background-color: white;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    overflow-y: scroll;
+    max-width: 600px;
+    max-height: 80%;
+    min-height: 400px;
+    width: 90%;
+    background-color: white;
+    overflow-y: auto;
     z-index: 1000;
-    position: relative;
     border-radius: 10px;
 }
 
-.how-to-close {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* 모달 버튼 스타일 */
+.modal-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
 }
 
-.how-to-close p {
-    color: white;
+.modal-btn:hover {
+    background-color: #0057b3;
+}
+
+.modal-btn:active {
+    background-color: #003c7a;
+}
+
+.modal-btn:focus {
+    outline: none;
+}
+
+/* 편집하기 버튼 스타일 */
+.edit-btn {
+    background-color: #28a745;
+}
+
+.edit-btn:hover {
+    background-color: #218838;
+}
+
+.edit-btn:active {
+    background-color: #1e7e34;
+}
+
+/* id가 null일 때 편집 제한 버튼 */
+.except-btn {
+    background-color: red;
+}
+
+/* 새 일기 작성 버튼 스타일 */
+.create-btn {
+    background-color: #ffc107;
+}
+
+.create-btn:hover {
+    background-color: #e0a800;
+}
+
+.create-btn:active {
+    background-color: #d39e00;
 }
 
 /* 스크롤바 */
@@ -230,10 +265,6 @@ header #me {
     border-radius: 3px;
 }
 
-#modal::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
 #modal-title {
     font-size: 24px;
 }
@@ -244,43 +275,47 @@ header #me {
 }
 
 .modal-desbox {
-    width: 100%;
-    height: 100%;
     padding: 10px;
-    background-color: #fff;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 40px;
 }
 
+/* 닫기 버튼 */
 #close-modal {
     position: absolute;
     top: 50px;
     right: 50px;
-    background-color: transparent;
+    background: transparent;
     border: none;
     cursor: pointer;
-    padding: 5px 10px;
     z-index: 1001;
 }
 
 #close-modal .fa-xmark {
     font-size: 50px;
     color: rgba(255, 255, 255, 0.521);
-    margin: 0;
-    padding: 0;
     cursor: pointer;
 }
 
+/* 모달 닫기 설명 */
+.how-to-close {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.how-to-close p {
+    color: white;
+}
 
 /* 오늘의 일기 쓰기 버튼 */
-#write-today{
+#write-today {
     position: fixed;
     bottom: 0;
     right: 0;
     transform: translate(-50%, -50%);
-    justify-content: center;
-    margin: 20px 0;
     height: 50px;
     width: 50px;
     background-color: #007bff;
@@ -290,50 +325,35 @@ header #me {
     cursor: pointer;
 }
 
-
-
-
-
-
-
-/* 달력 & 지도 고르기*/
+/* 캘린더/지도 선택 탭 */
 #cal-map {
-    margin: 0 auto;
+    margin: 20px auto 0;
     width: 800px;
     height: 700px;
-    margin-top: 20px;
-    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 #calORmap {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
     width: 800px;
+    margin-top: 20px;
 }
 
 .cmtab {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 800px;
     height: 40px;
     font-size: large;
     background-color: #b3b3b3;
     border-radius: 10px 10px 0 0;
-    border: 0;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
 }
 
 .cmtab.activemp {
     background-color: #fff;
     color: #000;
-}
-
-.cmtab:hover {
-    line-height: 5%;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
 }
 
 .cmcon {
@@ -351,41 +371,34 @@ header #me {
     transition: all 0.2s ease-in-out;
 }
 
-/* 달력 만들기 */
+/* 달력 헤더 */
 #calendar-con {
-    height: 50px;
-    width: 100%;
     display: flex;
     justify-content: space-between;
     width: 800px;
+    height: 50px;
 }
 
 #calendar-title {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
     font-weight: bold;
-    color: #000;
 }
 
 #calendar-con button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 40%;
-    background-color: #ffffff;
+    background: #fff;
     border: none;
-    font-size: large;
+    font-size: xx-large;
     color: #000;
     cursor: pointer;
-    font-size: xx-large;
 }
 
 #prev-month {
     padding-left: 310px;
-    transition: all 0.2s ease-in-out;
-
+    transition: padding 0.2s ease-in-out;
 }
 
 #prev-month:hover {
@@ -394,16 +407,14 @@ header #me {
 
 #next-month {
     padding-right: 310px;
-    transition: all 0.2s ease-in-out;
-
+    transition: padding 0.2s ease-in-out;
 }
 
 #next-month:hover {
     padding-right: 300px;
 }
 
-/* 달력 표 만들기 */
-
+/* 달력 그리드 */
 #calendar-grid {
     width: 100%;
     border-collapse: collapse;
@@ -421,38 +432,32 @@ header #me {
 #calendar-grid th {
     height: 50px;
     background: #c7c7c7;
-    color: #000000;
-    border-radius: 10px;
+    color: #000;
 }
 
 #calendar-grid th:first-child {
     background: #ff8f8f;
     color: #440000;
-    border-radius: 10px;
 }
 
 #calendar-grid th:last-child {
     background: #8fadff;
     color: #001044;
-    border-radius: 10px;
 }
-
 
 #calendar-grid td {
     height: 91px;
     cursor: pointer;
     background-color: #eeeeee;
-    color: #000000;
-    border-radius: 10px;
+    padding-right: 5px;
     text-align: end;
     vertical-align: baseline;
-    padding-right: 5px;
+    border-radius: 10px;
     text-shadow: 1px 1px 2px white, -1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white;
-    ;
 }
 
 #calendar-body td {
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
     border: 1px solid #ffffff;
 }
 
@@ -462,12 +467,10 @@ header #me {
 
 #calendar-grid td:first-child {
     background: #ffafaf;
-    border-radius: 10px;
 }
 
 #calendar-grid td:last-child {
     background: #acc2ff;
-    border-radius: 10px;
 }
 
 .dimmed {
@@ -475,13 +478,11 @@ header #me {
     background-color: #f9f9f9;
 }
 
-/* 오늘 강조 */
 #calendar-grid td.today {
     box-shadow: inset 0 0 0 3px rgb(255, 123, 0);
-    border-radius: 10px;
 }
 
-/* 지도 만들기 */
+/* 지도 */
 #map {
     height: 500px;
 }
