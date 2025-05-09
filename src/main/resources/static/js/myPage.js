@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     const loadMoreBtn = document.getElementById('load-more');
     const modalPage = document.getElementById('modal-page');
-    const modalOverlay = document.getElementById('modal-otherpage');
+    const modalOverlay = document.getElementById('modal-overlay');
     const closeModalBtn = document.getElementById('close-modal');
     const modalImage = document.getElementById('modal-image');
     const modalTitle = document.getElementById('modal-title');
-    const modalDescription = document.getElementById('modal-description');
+    const modalContent = document.getElementById('modal-content');
 
     let page = 0;
     const itemsPerPage = 10;
@@ -31,21 +31,98 @@ document.addEventListener('DOMContentLoaded', () => {
     modalOverlay.addEventListener('click', closeModal);
     closeModalBtn.addEventListener('click', closeModal);
 
+    // 캘린더에서 클릭한 일기 상세보기
+    document.querySelectorAll(".day-entry").forEach(entry => {
+        entry.addEventListener("click", async function () {
+            const date = this.dataset.date;
+
+            try {
+                const response = await fetch(`/api/diary/${date}`);
+                if (!response.ok) throw new Error("데이터를 불러오지 못했습니다");
+
+                const data = await response.json();
+
+                const modalTitle = document.getElementById("modal-title");
+                const modalContent = document.getElementById("modal-content");
+                const modalImage = document.getElementById("modal-image");
+                const modalDate = document.getElementById("modal-date");
+                const modalBtn = document.getElementById("modal-btn");
+
+                // 일기가 있으면
+                if (data.title) {
+                    modalTitle.textContent = data.title || "제목 없음";
+                    modalContent.textContent = data.content || "내용 없음";
+                    modalImage.src = data.imageUrl || "/image/welcome.png";
+                    modalDate.textContent = date;
+
+                    modalBtn.innerHTML = `<button class="modal-btn edit-btn" onclick="window.location.href='/diary/edit?id=${data.id}'">편집하기</button>`;
+                }
+                // 일기가 없으면
+                else {
+                    modalTitle.textContent = "새 일기 작성";
+                    modalContent.textContent = "일기가 없습니다. 새 일기를 작성하세요.";
+                    modalImage.src = "/image/welcome.png";
+                    modalDate.textContent = date;
+
+                    modalBtn.innerHTML = `<button class="modal-btn create-btn" onclick="window.location.href='/newDiary?date=${date}'">새 일기 작성</button>`;
+                }
+
+                // 모달 띄우기
+                document.getElementById("modal-page").style.display = "block";
+            } catch (error) {
+                console.error(error);
+                alert("일기를 불러오지 못했습니다.");
+            }
+    });
+    
+       // 모달 닫기
+        document.getElementById("modal-overlay").addEventListener("click", () => {
+            document.getElementById("modal-page").style.display = "none";
+        });
+        document.getElementById("close-modal").addEventListener("click", () => {
+            document.getElementById("modal-page").style.display = "none";
+        });
+    });
+    
+    // 일기 내용 모달에서 상세보기
+    document.querySelectorAll('.thumbnail-img').forEach(img => {
+        img.addEventListener('click', function () {
+    
+            fetch(`/api/diary/${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    setModalContent(data); // 공통 함수로 모달 세팅
+                })
+                .catch(error => console.error('Error loading diary detail:', error));
+        });
+    });
+    
+
     // 리스트에서 사용하는 모달 이벤트 등록 함수
-    function addClickEvent(img, title, description) {
+    function addClickEvent(img, data) {
+        img.dataset.date = data.date;
+    
         img.addEventListener('click', () => {
-            modalImage.src = img.src;
-            modalTitle.textContent = title;
-            modalDescription.textContent = description;
-            modalPage.style.display = 'block';
+            setModalContent(data);
         });
     }
 
-    // 캘린더에서 사용하는 모달 호출 함수
-    function showModal(post) {
-        modalImage.src = post.image;
-        modalTitle.textContent = post.title;
-        modalDescription.textContent = post.description;
+    // 모달 호출 함수
+    function setModalContent(data) {
+        const modalDate = data.date || "";
+
+        modalTitle.textContent = data.title || '제목 없음';
+        modalContent.textContent = data.content || '내용 없음';
+        modalImage.src = data.image || '/image/welcome.png';
+        modalDate.textContent = data.date || '';
+
+        const btn = document.getElementById('modal-btn');
+        if (data.id) {
+            btn.innerHTML = `<button class="modal-btn edit-btn" onclick="window.location.href='/diary/edit?id=${data.id}'">편집하기</button>`;
+        } else {
+            btn.innerHTML = `<button class="modal-btn create-btn" onclick="window.location.href='/newDiary?date=${data.date}'">새 일기 작성</button>`;
+        }
+
         modalPage.style.display = 'block';
     }
 
@@ -78,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.className = 'grid-item';
                 item.appendChild(img);
 
-                addClickEvent(img, entry.title, entry.description);
+                addClickEvent(img, entry.title, entry.content);
 
                 grid.replaceChild(item, placeholder); // 교체
                 imagesLoaded(item, () => {
@@ -222,16 +299,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 td.textContent = date.getDate(); // 날짜 숫자만 표시
                 td.dataset.date = dateStr;
 
-                // 게시물 찾기
-                const post = posts.find(p => p.date === dateStr);
-
-                // 클릭 이벤트
+                // 클릭 시 일기 상세보기 또는 새 일기 작성
                 td.addEventListener('click', () => {
-                    if (post) {
-                        showModal(post); // 모달 열기
-                    } else {
-                        window.location.href = `/newDiary?date=${dateStr}`; // 작성화면 이동
-                    }
+                    fetch(`/api/diary/${dateStr}`)
+                        .then(response => {
+                            if (response.ok) return response.json();
+                            else throw new Error('No diary found');
+                        })
+                        .then(data => {
+                            setModalContent({
+                                title: data.title,
+                                content: data.content,
+                                image: data.imageUrl || '',
+                            });
+                        })
+                        .catch(() => {
+                            setModalContent({
+                                title: "새 일기 작성",
+                                content: "이 날짜에는 작성된 일기가 없습니다.",
+                                image: null,
+                                date: dateStr,
+                                id: null
+                            });
+                
+                        });
                 });
 
                 if (dimmed) td.classList.add('dimmed');

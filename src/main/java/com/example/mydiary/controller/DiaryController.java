@@ -5,10 +5,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,25 +60,27 @@ public class DiaryController {
     }
 
     // 날짜 선택 후 일기 조회 및 작성
-    @GetMapping("/calendar/{date}")
-    public String diaryByDate(@PathVariable("date") String date, Model model, Principal principal) {
+    @GetMapping("/api/diary/{date}")
+    public ResponseEntity<?> getDiaryByDate(@PathVariable("date") String date,
+            Principal principal) {
         String uId = principal.getName();
 
         try {
-            // 타입 변환
             java.sql.Date sqlDate = java.sql.Date.valueOf(date); // "yyyy-MM-dd" 형식
-
             Diary diary = diaryService.getDiaryByDateAndUser(sqlDate, uId);
 
             if (diary != null) {
-                model.addAttribute("diary", diary);
-                return "editDiary";
+                Map<String, Object> result = new HashMap<>();
+                result.put("id", diary.getId());
+                result.put("title", diary.getTitle());
+                result.put("content", diary.getContent());
+                result.put("imageUrl", diary.getImage() != null ? diary.getImage() : "/image/default.jpg");
+                return ResponseEntity.ok(result);
             } else {
-                return "redirect:/newDiary";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No diary found");
             }
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format");
         }
     }
 

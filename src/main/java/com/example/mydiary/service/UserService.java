@@ -11,4 +11,6 @@ public interface UserService {
     // 사용자 프로필 사진 변경
     void updateUImage(String uId, MultipartFile uImage);
 
+    // 이메일 조회
+    Member findUserByEmail(String email);
 }
