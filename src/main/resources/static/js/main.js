@@ -1,9 +1,3 @@
-// 현재 날짜 불러오기
-document.addEventListener("DOMContentLoaded", function () {
-    const today = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-    document.getElementById("date-now").textContent = today.toLocaleDateString("ko-KR", options);
-});
 
 // 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
@@ -114,15 +108,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-});
-
-// 사용자 프로필 사진 변경
-document.getElementById('changeImage').addEventListener('click', function () {
-    document.getElementById('imageInput').click();
-});
-
-document.getElementById('imageInput').addEventListener('change', function () {
-    if (this.files.length > 0) {
-        document.getElementById('uploadNewUImage').submit();
-    }
 });

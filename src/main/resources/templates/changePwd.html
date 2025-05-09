@@ -128,37 +128,6 @@
             color: #333;
         }
     </style>
-    <script>
-        function validatePwdChange() {
-            let currentPwd = document.getElementById("currentPwd").value;
-            let newPwd = document.getElementById("newPwd").value;
-            let confirmPwd = document.getElementById("confirmPwd").value;
-            let newPwdMsg = document.getElementById("newPwdMsg");
-            let confirmPwdMsg = document.getElementById("confirmPwdMsg");
-            let valid = true;
-            if (!/^(?=.*[!@#$%^&*()_+=-]).{8,15}$/.test(newPwd)) {
-                newPwdMsg.textContent = "새 비밀번호는 8~15자이며 특수문자를 포함해야 합니다.";
-                newPwdMsg.className = "error";
-                valid = false;
-            } else if (currentPwd === newPwd) {
-                newPwdMsg.textContent = "기존 비밀번호와 같을 수 없습니다.";
-                newPwdMsg.className = "error";
-                valid = false;
-            } else {
-                newPwdMsg.textContent = "사용 가능한 새 비밀번호입니다.";
-                newPwdMsg.className = "success";
-            }
-            if (newPwd !== confirmPwd || confirmPwd === "") {
-                confirmPwdMsg.textContent = "새 비밀번호가 일치하지 않습니다.";
-                confirmPwdMsg.className = "error";
-                valid = false;
-            } else {
-                confirmPwdMsg.textContent = "비밀번호가 일치합니다.";
-                confirmPwdMsg.className = "success";
-            }
-            return valid;
-        }
-    </script>
 </head>
 <body>
 
@@ -218,35 +187,8 @@
     <!-- CSRF 토큰 -->
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-    <script th:src="@{/js/main.js}"></script>
-
-    <script>
-        // 로그아웃
-        function handleSocialLogout() {
-            // 네이버 로그아웃 팝업
-            const naverPopup = window.open("https://nid.naver.com/nidlogin.logout", "naverLogout", "width=1,height=1");
-    
-            setTimeout(() => {
-                try { if (naverPopup) naverPopup.close(); } catch (e) {}
-    
-                const csrfToken = document.querySelector('input[name="_csrf"]').value;
-    
-                // 폼 생성하여 서버로 POST 전송
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/logout';
-    
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_csrf';
-                csrfInput.value = csrfToken;
-    
-                form.appendChild(csrfInput);
-                document.body.appendChild(form);
-                form.submit();
-            }, 300);
-        }
-    </script>
+    <script th:src="@{/js/myProfile.js}"></script>
+    <script th:src="@{/js/share.js}"></script>
 
 </body>
 </html>

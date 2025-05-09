@@ -8,23 +8,22 @@
 
     <!-- 특정 사용자 조회 -->
     <select id="selectUserByUId" parameterType="String" resultType="com.example.mydiary.entity.Member">
-        SELECT *
-        FROM member
-        WHERE uId = #{uId}
+        SELECT * FROM member WHERE uId = #{uId}
+    </select>
+
+    <!-- 사용자 이메일 조회 -->
+    <select id="findByEmail" parameterType="string" resultType="com.example.mydiary.entity.Member">
+        SELECT * FROM member WHERE u_email = #{email}
     </select>
     
     <!-- 사용자 프로필 사진 변경-->
     <update id="updateUImage">
-        UPDATE member
-        SET uImage = #{uImage}
-        WHERE uId = #{uId}
+        UPDATE member SET uImage = #{uImage} WHERE uId = #{uId}
     </update>
 
     <!-- 비밀번호 변경 -->
     <update id="updatePassword">
-        UPDATE member
-        SET uPwd = #{uPwd}
-        WHERE uId = #{uId}
+        UPDATE member SET uPwd = #{uPwd} WHERE uId = #{uId}
     </update>
 
 </mapper>

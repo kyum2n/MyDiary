@@ -29,6 +29,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectUserByUId(uId);
     }
 
+    // 이메일로 사용자 정보 조회
+    @Override
+    public Member findUserByEmail(String email) {
+        return userMapper.findByEmail(email);
+    }
+
     // 사용자 프로필 사진 변경
     @Override
     public void updateUImage(String uId, MultipartFile uImage) {
