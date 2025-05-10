@@ -30,10 +30,12 @@ public class SecurityConfig {
                                 .userDetailsService(userDetailsService)
                                 .authorizeHttpRequests(authz -> authz
                                                 .requestMatchers(
-                                                                "/", "/intro", "/login", "/login/**", "/logout-success",
-                                                                "/join", "/check-id", "/logout-kakao",
-                                                                "/css/**", "/js/**", "/img/**", "/images/**",
-                                                                "/image/**", "/error",
+                                                                "/", "/css/**",
+                                                                "/js/**", "/image/**", "/uploads/**",
+                                                                "/login", "/join", "/intro",
+                                                                "/logout-kakao", "/logout-success",
+                                                                "/check-id", "/authentication",
+                                                                "/myProfile/**", "/diary/**",
                                                                 "/findId", "/findPwd")
                                                 .permitAll()
                                                 .anyRequest().authenticated())

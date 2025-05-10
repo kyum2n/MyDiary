@@ -5,10 +5,16 @@ import com.example.mydiary.repository.MemberMapper;
 import com.example.mydiary.service.MailService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.UUID;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,8 +56,8 @@ public class LoginController {
         String tempPwd = UUID.randomUUID().toString().substring(0, 8);
         String encodedPwd = passwordEncoder.encode(tempPwd);
 
-        System.out.println("🔍 [DEBUG] 조회된 사용자 이메일: " + user.getUEmail());
-        System.out.println("🔐 [DEBUG] 임시 비밀번호: " + tempPwd);
+        System.out.println("[DEBUG] 조회된 사용자 이메일: " + user.getUEmail());
+        System.out.println("[DEBUG] 임시 비밀번호: " + tempPwd);
 
         memberMapper.updatePassword(uId, encodedPwd);
 
@@ -67,28 +73,51 @@ public class LoginController {
     // 로그인 페이지로 이동
     @GetMapping("/login")
     public String loginPage(HttpServletRequest request, Model model) {
+
         if (request.getParameter("error") != null) {
-            model.addAttribute("error", "로그인 실패: 아이디/비밀번호 확인");
+            model.addAttribute("error", "Login failed: Invalid ID or password");
         }
 
         if (request.getParameter("logout") != null) {
-            model.addAttribute("message", "로그아웃 완료");
+            model.addAttribute("message", "Logout successful");
         }
 
         return "login";
     }
 
-    // 로그아웃 성공 시 인트로 페이지로 이동
-    @GetMapping("/logout")
-    public String logoutSuccess() {
-        return "redirect:/intro";
+    // 로그인 처리
+    @PostMapping("/login")
+    public String login(@RequestParam String uId,
+            @RequestParam String uPwd,
+            HttpServletRequest request,
+            HttpSession session,
+            Model model) {
+
+        Member member = memberMapper.findByuId(uId);
+        if (member == null || !passwordEncoder.matches(uPwd, member.getUPwd())) {
+            model.addAttribute("error", "Invalid ID or password");
+            return "login";
+        }
+
+        session.setAttribute("loginUser", member);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                member, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+
+        request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", context);
+
+        return "redirect:/main";
     }
 
     // 카카오 로그아웃
-    // @GetMapping("/logout-kakao")
-    // public String kakaoLogoutRedirect() {
-    // return "redirect:/intro";
-    // }
+    @GetMapping("/logout-kakao")
+    public String kakaoLogoutRedirect() {
+        return "redirect:/intro";
+    }
 
     // 회원가입
     @GetMapping("/join")

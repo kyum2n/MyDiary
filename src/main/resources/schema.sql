@@ -6,7 +6,7 @@ CREATE TABLE member (
     uId varchar(100) NOT NULL PRIMARY KEY,
     uName varchar(100) NOT NULL,
     uPwd varchar(100) NOT NULL,
-    uEmail varchar(100) NOT NULL UNIQUE,
+    uEmail varchar(100) NOT NULL,
     uImage VARCHAR(255),
     provider VARCHAR(100),
     providerId VARCHAR(100)

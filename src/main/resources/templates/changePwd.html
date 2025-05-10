@@ -156,7 +156,7 @@
     <div class="container">
         <div class="form-box">
             <h2>비밀번호 변경</h2>
-            <form th:action="@{/change-password}" method="post" onsubmit="return validatePwdChange()">
+            <form th:action="@{/changePwd}" method="post" onsubmit="return validatePwdChange()">
                 <div class="form-row">
                     <label for="currentPwd">원래 비밀번호</label>
                     <input type="password" id="currentPwd" name="currentPwd" required>

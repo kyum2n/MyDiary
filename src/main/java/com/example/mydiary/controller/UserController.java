@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -110,13 +111,19 @@ public class UserController {
     public String changePassword(@RequestParam String currentPwd,
             @RequestParam String newPwd,
             HttpSession session,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         Member loginUser = (Member) session.getAttribute("loginUser");
 
         if (loginUser == null) {
             model.addAttribute("error", "로그인이 필요합니다.");
             return "redirect:/intro";
+        }
+
+        if (loginUser.getProvider() != null) {
+            model.addAttribute("error", "소셜 로그인 사용자는 비밀번호 변경이 불가능합니다.");
+            return "changePwd";
         }
 
         Member user = userMapper.selectUserByUId(loginUser.getUId());
@@ -137,6 +144,7 @@ public class UserController {
         String encodedNewPwd = passwordEncoder.encode(newPwd);
         userMapper.updatePassword(user.getUId(), encodedNewPwd);
 
+        redirectAttributes.addFlashAttribute("success", true);
         model.addAttribute("message", "비밀번호가 변경되었습니다.");
         return "redirect:/intro";
     }

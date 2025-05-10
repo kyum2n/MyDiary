@@ -1,109 +1,86 @@
 package com.example.mydiary.service;
 
+import java.util.Collections;
+
 import com.example.mydiary.entity.Member;
 import com.example.mydiary.oauth.OAuthAttributes;
 import com.example.mydiary.repository.MemberMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberMapper memberMapper;
-    private final HttpServletRequest request; // 세션 접근
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("loadUser() 진입 완료: " + registrationId);
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        OAuth2User oAuth2User;
-        try {
-            oAuth2User = super.loadUser(userRequest);
-        } catch (Exception e) {
-            System.out.println("super.loadUser() 실패: " + e.getMessage());
-            throw e;
-        }
-
+        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // "naver", "kakao"
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        System.out.println("registrationId = " + registrationId);
-        System.out.println("userNameAttributeName = " + userNameAttributeName);
-        System.out.println("원시 attributes: " + oAuth2User.getAttributes());
+        // OAuthAttributes: 사용자 정보 변환 클래스 (직접 구현한 것)
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName,
+                oAuth2User.getAttributes());
 
-        OAuthAttributes attributes;
-        try {
-            attributes = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
-        } catch (Exception e) {
-            System.out.println("OAuthAttributes.of() 실패: " + e.getMessage());
-            throw e;
-        }
+        // DB에 저장하거나 기존 유저 조회
+        Member member = saveOrUpdate(attributes);
 
-        Member member;
-        try {
-            member = saveOrUpdate(attributes);
-        } catch (Exception e) {
-            System.out.println("saveOrUpdate() 실패: " + e.getMessage());
-            throw e;
-        }
+        // 세션에 loginUser 설정
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
+        HttpSession session = request.getSession();
+        session.setAttribute("loginUser", member); // 세션 기반 접근도 병행 가능
 
-        Map<String, Object> userAttributes = new HashMap<>(attributes.getAttributes());
+        // SecurityContext에 인증 정보 수동 등록
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                member,
+                null,
+                Collections.singleton(() -> "ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        if (!userAttributes.containsKey(userNameAttributeName) || userAttributes.get(userNameAttributeName) == null) {
-            System.out.println("😰 " + userNameAttributeName + " 없음. providerId로 대체");
-            userAttributes.put(userNameAttributeName, attributes.getProviderId());
-        }
-
-        userAttributes.put("provider", registrationId);
-        userAttributes.putIfAbsent("id", attributes.getProviderId());
-
-        // 세션에 provider 저장 (logout-success.html에서 분기용)
-        request.getSession().setAttribute("provider", registrationId);
-
-        try {
-            return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                    userAttributes,
-                    userNameAttributeName);
-        } catch (Exception e) {
-            System.out.println("DefaultOAuth2User 생성 실패: " + e.getMessage());
-            throw e;
-        }
+        return new DefaultOAuth2User(
+                Collections.singleton(() -> "ROLE_USER"),
+                attributes.getAttributes(),
+                attributes.getNameAttributeKey());
     }
 
+    // 사용자 저장 or 업데이트
     private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member existingMember = memberMapper.findByEmail(attributes.getEmail());
-
-        if (existingMember == null) {
-            Member newMember = new Member();
-            newMember.setUId("social_" + attributes.getProviderId());
-            newMember.setUName(attributes.getName());
-            newMember.setUPwd("social");
-            newMember.setUEmail(attributes.getEmail());
-            newMember.setUImage(attributes.getProfileImage());
-            newMember.setProvider("social");
-            newMember.setProviderId(attributes.getProviderId());
-
-            System.out.println("새 사용자 등록: " + newMember.getUEmail());
-            memberMapper.insertMember(newMember);
-            return newMember;
+        Member existing = memberMapper.findByuId(attributes.getUId());
+        if (existing == null) {
+            Member newUser = Member.builder()
+                    .uId(attributes.getUId())
+                    .uName(attributes.getUName())
+                    .uPwd("social")
+                    .uEmail(attributes.getUEmail())
+                    .uImage(attributes.getUImage())
+                    .provider(attributes.getProvider())
+                    .providerId(attributes.getUId())
+                    .build();
+            memberMapper.insertMember(newUser);
+            return newUser;
+        } else {
+            return existing;
         }
-
-        System.out.println("기존 사용자 로그인: " + existingMember.getUEmail());
-        return existingMember;
     }
 }
