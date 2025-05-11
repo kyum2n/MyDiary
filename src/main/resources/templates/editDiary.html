@@ -76,11 +76,11 @@
             
             <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
 
-            <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/>
+            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
         </nav>
     </header>
     <main>
-        <form action="/diary/edit" method="post" enctype="multipart/form-data" th:object="${diary}">
+        <form th:action="@{/diary/edit}" method="post" enctype="multipart/form-data" th:object="${diary}">
             <input type="hidden" th:field="*{id}" />
             <p><span id="date-now" name="date">date</span>의 일기 수정하기</p>
             

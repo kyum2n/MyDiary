@@ -38,7 +38,16 @@ public class ShareController {
         if (authentication != null && authentication.getName() != null) {
             String uId = authentication.getName();
             com.example.mydiary.entity.Member user = userService.findUserByUId(uId);
+
+            // 프로필 사진 이미지가 비어있으면 디폴트 이미지 보여주기
+            if (user != null) {
+                if (user.getUImage() == null || user.getUImage().isEmpty()) {
+                    user.setUImage("/image/defaultProfileImage.webp");
+                }
+                model.addAttribute("user", user);
+            }
             model.addAttribute("user", user);
+            model.addAttribute("timestamp", System.currentTimeMillis());
         }
     }
 }

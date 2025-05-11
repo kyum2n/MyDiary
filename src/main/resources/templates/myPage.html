@@ -20,7 +20,7 @@
                 <li>
                     <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
                 </li>
-                <li><img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/></li>
+                <li><img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/></li>
             </ul>
         </nav>
     </header>

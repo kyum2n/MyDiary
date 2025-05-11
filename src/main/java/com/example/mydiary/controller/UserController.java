@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -23,20 +24,26 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final WeatherService weatherService;
+
+    @Value("${upload.profile-dir}")
+    private String uploadDir;
 
     // 사용자 프로필
     @GetMapping("/myProfile")
@@ -55,11 +62,9 @@ public class UserController {
             user = userService.findUserByEmail(uId);
         }
 
+        // 비밀번호 암호화
         if (user != null) {
             user.setUPwd("********");
-            if (user.getUImage() == null || user.getUImage().isEmpty()) {
-                user.setUImage("/image/defaultProfileImage.webp");
-            }
             model.addAttribute("user", user);
         }
 
@@ -80,9 +85,11 @@ public class UserController {
 
     // 이미지 파일 서버에 저장
     @GetMapping("/uploads/profile/{filename:.+}")
+    @ResponseBody
     public ResponseEntity<Resource> serveProfileImage(@PathVariable String filename) {
         try {
-            Path filePath = Paths.get("src/main/resources/static/uploads/profile/").resolve(filename).normalize();
+            Path realUploadDir = Paths.get(uploadDir).toAbsolutePath();
+            Path filePath = realUploadDir.resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() && resource.isReadable()) {
