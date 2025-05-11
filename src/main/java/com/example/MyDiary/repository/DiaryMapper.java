@@ -1,15 +1,31 @@
 package com.example.mydiary.repository;
 
-import com.example.mydiary.entity.Diary;
-import org.apache.ibatis.annotations.Mapper;
+import java.sql.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import com.example.mydiary.entity.Diary;
 
 @Mapper
 public interface DiaryMapper {
-    Diary findById(Long id);             // ✅ 이미 있는 것으로 가정
-    List<Diary> findAll();               // ✅ XML에 있던 메서드 추가
-    List<Diary> findByUid(String uId);   // ✅ XML과 매칭 위해 추가
+
+    // 모든 일기 조회
+    List<Diary> selectAllDiaries(@Param("uId") String uId);
+
+    // 특정 일기 조회
+    Diary selectDiaryById(@Param("id") int id);
+
+    // 특정 날짜에 작성된 일기 조회
+    Diary findByDateAndUId(@Param("date") Date date, @Param("uId") String uId);
+
+    // 일기 등록
     void insertDiary(Diary diary);
+
+    // 일기 수정
     void updateDiary(Diary diary);
-    void deleteDiary(Long id);
+
+    // 일기 삭제
+    void deleteDiary(@Param("id") int id);
+
 }

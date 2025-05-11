@@ -11,6 +11,8 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+	sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 configurations {
@@ -24,29 +26,37 @@ repositories {
 }
 
 dependencies {
-    // Spring Web + Thymeleaf
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    //  이메일 전송
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    // Spring Security + OAuth2
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    //  Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
-    // ✅ MyBatis 전용
+    //  Spring MVC
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //  DB / MyBatis
+    implementation 'org.postgresql:postgresql:42.7.3'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 
-    // PostgreSQL
-    runtimeOnly 'org.postgresql:postgresql'
+    //  JSON 파싱
+    implementation 'org.json:json:20210307'
 
-    // Lombok
+    //  Spring Security (버전 명시적 고정)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-web:6.2.1'
+    implementation 'org.springframework.security:spring-security-config:6.2.1'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //  Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // DevTools
+    //  개발 편의
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // Test
+    //  테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

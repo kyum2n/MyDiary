@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MyDiary - 환영합니다</title>
-    <link rel="stylesheet" th:href="@{/css/intro.css}"> <!-- Thymeleaf용 -->
-    <link rel="stylesheet" href="/css/intro.css"> <!-- 일반 경로용 -->
+    <link rel="stylesheet" th:href="@{/css/intro.css}">
 </head>
 <body>
 <div class="intro-container">
@@ -18,7 +17,7 @@
 
             <!-- 이미지 삽입 (폴라로이드 느낌) -->
             <div class="photo-stack">
-                <img src="/img/welcome.png" alt="폴라로이드 사진">
+                <img th:src="@{/image/welcome.png}" alt="폴라로이드 사진">
             </div>
             <!-- 로그인 버튼 -->
             <a th:href="@{/login}" href="/login" class="book-login">로그인</a>
@@ -34,7 +33,7 @@
     </ul>
 </div>
 
-<!-- JS: 커버 높이에 맞춰 책 옆면 높이 조정 -->
+<!-- 커버 높이에 맞춰 책 옆면 높이 조정 -->
 <script>
     window.addEventListener('DOMContentLoaded', () => {
         const cover = document.querySelector('.book-cover');

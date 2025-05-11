@@ -1,4 +1,4 @@
-package com.example.mydiary;
+package com.example.MyDiary;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

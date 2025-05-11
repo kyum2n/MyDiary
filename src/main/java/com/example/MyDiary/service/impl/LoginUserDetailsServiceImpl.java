@@ -9,19 +9,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MyUserDetailsService implements UserDetailsService {
+public class LoginUserDetailsServiceImpl implements UserDetailsService {
 
-    private final MemberMapper memberMapper; // ✅ MyBatis 매퍼로 변경
+    private final MemberMapper memberMapper;
 
-    // 로그인 시 사용자 아이디(uId)로 회원 조회
     @Override
     public UserDetails loadUserByUsername(String uId) throws UsernameNotFoundException {
-        Member member = memberMapper.findByUid(uId); // ✅ null 리턴 기반으로 처리
+        Member member = memberMapper.findByuId(uId); // uId 기준
 
         if (member == null) {
-            throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + uId);
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + uId);
         }
 
-        return new MyUserDetails(member); // ✅ UserDetails 구현체로 변환
+        return new MyUserDetails(member);
     }
 }

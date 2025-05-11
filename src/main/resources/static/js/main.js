@@ -1,3 +1,5 @@
+
+// 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     const loadMoreBtn = document.getElementById('load-more');
@@ -41,15 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderItems(items) {
         items.forEach((entry, index) => {
-            // 1. placeholder 스켈레톤 추가
+            // placeholder 스켈레톤
             const placeholder = document.createElement('div');
             placeholder.className = 'grid-item placeholder';
 
-            // ✅ 여기서 크기 부여는 placeholder에!
             // placeholder.style.width = getRandomInt(220, 300) + 'px';
             placeholder.style.height = getRandomInt(180, 240) + 'px';
 
-            // ✅ spinner는 크기 고정된 정중앙 요소
+            // 정중앙에 크기 고정
             const spinner = document.createElement('div');
             spinner.className = 'loading-spinner';
 
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(placeholder);
             msnry.appended(placeholder);
 
-            // 2. 이미지 로드 후 교체
+            // 이미지 로드 후 교체
             const img = new Image();
             img.src = entry.image;
             img.alt = entry.title;
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 addClickEvent(img, entry.title, entry.description);
 
-                grid.replaceChild(item, placeholder); // 교체
+                grid.replaceChild(item, placeholder);
                 imagesLoaded(item, () => {
                     msnry.appended(item);
                     msnry.layout();
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // JSON 데이터 로딩
-    fetch('../static/data/dummydiary.json')
+    fetch('/data/dummydiary.json')
         .then(res => res.json())
         .then(data => {
             allData = data;

@@ -1,11 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>일기 쓰기</title>
+    <style>
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        header, .header-nav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+        header #me {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px;
+        }
+        .logout-button {
+            background: none;
+            border: none;
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-button span {
+            display: inline;
+            font-size: 16px;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #date-now {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #current-image #imagePreview {
+            display:none;
+            max-width: 300px;
+        }
+        footer {
+            margin-top: 80px;
+            background-color: #e8e8e8;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+    <script src="https://cdn.tiny.cloud/1/tia0di1rcb7ruxx6kprwpbivngcd8z8tk0oqsqyyo6y0h8zl/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <nav class="header-nav">
+            <a th:href="@{myPage}">마이페이지</a>
+            <a th:href="@{myProfile}">내 프로필</a>
+            <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
+            <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/>
+        </nav>
+    </header>
+    <main>
+        <form action="/diary/save" method="post" enctype="multipart/form-data">
+            <p><span id="date-now"></span>의 새 일기 쓰기</p>
+            
+            <div id="diary-content">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" required>
+                <br>
+                <label for="content">내용</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+
+            <div id="image-attach">
+                <h2>이미지 첨부</h2>
+                <input type="file" name="image" id="imageInput">
+                <button type="button">이미지 첨부</button>
+                <button type="button" id="searchImageBtn">이미지 검색하기</button>
+                <input type="search" name="search" placeholder="검색 키워드">
+                <br>
+                <div></div>
+                <br>
+                <div id="current-image">
+                    <h2>현재 이미지</h2>
+                    <img class="imagePreview" width="200" alt="이미지 미리보기" onchange="previewImage(event)">
+                </div>
+            </div>
+
+            <div>
+                <h2>위치 추가</h2>
+                <p>선택한 위치 : <span></span></p>
+                <p>선택한 위치 현재 날씨 : <span></span></p>
+            </div>
+
+            <button type="submit">저장</button>
+        </form>
+    </main>
+
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
     
+    <!-- CSRF 토큰 -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <script th:src="@{/js/share.js}"></script>
+    <script th:src="@{/js/inputDiary.js}"></script>
+
 </body>
 </html>

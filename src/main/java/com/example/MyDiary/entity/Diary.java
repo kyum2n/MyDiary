@@ -1,19 +1,20 @@
 package com.example.mydiary.entity;
 
-import lombok.*;
-import java.time.LocalDate;
+import java.sql.Date;
 
-@Getter
-@Setter
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Diary {
-    private Long id;
-    private String uId;     // 외래키 → Member 참조 대신 직접 uId로 받음
+    private int id;
+    private String uId;
     private String title;
-    private LocalDate date;
+    private Date date;
+    private String content;
     private String image;
     private String location;
-    private String content;
 }
