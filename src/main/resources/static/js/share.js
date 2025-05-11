@@ -7,26 +7,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 로그아웃
 function handleSocialLogout() {
-    // 네이버 로그아웃 팝업
-    const naverPopup = window.open("https://nid.naver.com/nidlogin.logout", "naverLogout", "width=1,height=1");
-    
-    setTimeout(() => {
-        try { if (naverPopup) naverPopup.close(); } catch (e) {}
-        
-        const csrfToken = document.querySelector('input[name="_csrf"]').value;
-        
-        // 폼 생성하여 서버로 POST 전송
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/logout';
+    const provider = sessionStorage.getItem("loginProvider");
 
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_csrf';
-        csrfInput.value = csrfToken;
+    if (provider === "naver") {
+        // 팝업은 반드시 이 시점에 바로 띄워야 브라우저가 허용함
+        const naverPopup = window.open(
+            "https://nid.naver.com/nidlogin.logout",
+            "naverLogout",
+            "width=400,height=300"
+        );
 
-        form.appendChild(csrfInput);
-        document.body.appendChild(form);
-        form.submit();
-    }, 300);
+        // 팝업 닫히는 걸 기다렸다가 로그아웃 처리
+        const popupTimer = setInterval(() => {
+            if (naverPopup && naverPopup.closed) {
+                clearInterval(popupTimer);
+                submitLogoutForm();
+            }
+        }, 300);
+    } else {
+        // 카카오, 일반 등은 바로 로그아웃
+        submitLogoutForm();
+    }
+}
+
+// 로그아웃 폼 전송
+function submitLogoutForm() {
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/customLogout';
+
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+
+    form.appendChild(csrfInput);
+    document.body.appendChild(form);
+    form.submit();
 }

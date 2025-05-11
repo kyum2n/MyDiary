@@ -10,8 +10,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.example.mydiary.service.CustomOAuth2UserService;
 
-import com.example.mydiary.security.CustomLogoutSuccessHandler;
-
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -36,27 +34,27 @@ public class SecurityConfig {
                                                                 "/logout-kakao", "/logout-success",
                                                                 "/check-id", "/authentication",
                                                                 "/myProfile/**", "/diary/**",
-                                                                "/findId", "/findPwd")
+                                                                "/findId", "/findPwd","/main")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
-                                .formLogin(form -> form
-                                                .loginPage("/login")
-                                                .loginProcessingUrl("/authentication")
-                                                .usernameParameter("usernameInput")
-                                                .passwordParameter("passwordInput")
-                                                .defaultSuccessUrl("/main", true)
-                                                .failureUrl("/login?error"))
+                                // .formLogin(form -> form 없애도 됨
+                                //                 .loginPage("/login")
+                                //                 .loginProcessingUrl("/authentication")
+                                //                 .usernameParameter("usernameInput")
+                                //                 .passwordParameter("passwordInput")
+                                //                 .defaultSuccessUrl("/main", true)
+                                //                 .failureUrl("/login?error"))
                                 .oauth2Login(oauth2 -> oauth2
                                                 .loginPage("/login")
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
-                                                .defaultSuccessUrl("/main", true))
-                                .logout(logout -> logout
-                                                .logoutUrl("/logout")
-                                                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
-                                                .clearAuthentication(true)
-                                                .invalidateHttpSession(true)
-                                                .deleteCookies("JSESSIONID"));
+                                                .defaultSuccessUrl("/main", true));
+                                // .logout(logout -> logout 없애도 됨(예정)
+                                //                 .logoutUrl("/logout")
+                                //                 .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                                //                 .clearAuthentication(true)
+                                //                 .invalidateHttpSession(true)
+                                //                 .deleteCookies("JSESSIONID"));
 
                 return http.build();
         }

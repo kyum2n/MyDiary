@@ -1,6 +1,5 @@
 package com.example.mydiary.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Member;
 import java.nio.file.Files;
@@ -29,22 +28,26 @@ import com.example.mydiary.entity.Diary;
 import com.example.mydiary.service.DiaryService;
 import com.example.mydiary.service.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @Controller
-@RequiredArgsConstructor
 public class DiaryController {
 
     private final DiaryService diaryService;
     private final UserService userService;
 
     // 이미지 저장 경로 설정
-    @Value("${upload.diary-dir}")
-    private String diaryUploadDir;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     // 구글 맵 API 키 설정
     @Value("${google.map.api.key}")
     private String googleMapApiKey;
+
+    // 생성자 주입
+    public DiaryController(DiaryService diaryService, UserService userService) {
+        this.diaryService = diaryService;
+        this.userService = userService;
+
+    }
 
     // 마이 페이지로 이동
     @GetMapping("/myPage")
@@ -108,27 +111,21 @@ public class DiaryController {
             Principal principal) {
 
         // 세션에서 로그인 정보 확인
-        diary.setUId(principal.getName());
+        String uId = principal.getName();
 
-        // 이미지 저장 처리
+        // 이미지 처리
         if (!image.isEmpty()) {
             try {
-                File uploadDir = new File(diaryUploadDir);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
+                String imageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                Path imagePath = Path.of(uploadPath, imageName);
 
-                // 파일 이름 지정
-                String originalFilename = image.getOriginalFilename();
-                String filename = System.currentTimeMillis() + "_" + originalFilename;
-                String filePath = diaryUploadDir + filename;
+                // 이미지 저장 경로 설정
+                Files.createDirectories(imagePath.getParent());
+                Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
 
-                // 파일 저장
-                File dest = new File(filePath);
-                image.transferTo(dest);
+                // 이미지 경로를 Diary 객체에 설정
+                diary.setImage("/uploads/" + imageName);
 
-                // DB에는 상대 경로로 저장
-                diary.setImage(filePath);
             } catch (IOException e) {
                 e.printStackTrace();
                 return "error"; // 이미지 저장 실패 시
@@ -137,13 +134,16 @@ public class DiaryController {
 
         // 일기 저장
         try {
+            diary.setUId(uId);
+            System.out.println("Saving diary: " + diary);
             diaryService.addDiary(diary);
-            return "redirect:/myPage";
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Redirecting to myPage...");
-            return "redirect:/myPage";
+            return "error";
         }
+
+        System.out.println("Redirecting to myPage...");
+        return "redirect:/myPage";
     }
 
     // 일기 수정
@@ -174,39 +174,25 @@ public class DiaryController {
         String uId = principal.getName();
         diary.setUId(uId);
 
-        // 수정된 이미지 저장 처리
         if (!image.isEmpty()) {
             try {
-                File uploadDir = new File(diaryUploadDir);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
+                String imageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
 
-                // 파일 이름 지정
-                String originalFilename = image.getOriginalFilename();
-                String filename = System.currentTimeMillis() + "_" + originalFilename;
-                String filePath = diaryUploadDir + filename;
+                Path imagePath = Path.of(uploadPath, imageName);
 
-                // 파일 저장
-                File dest = new File(filePath);
-                image.transferTo(dest);
+                Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
 
-                // DB에는 상대 경로로 저장
-                diary.setImage(filePath);
+                diary.setImage("/uploads/" + imageName);
+
             } catch (IOException e) {
                 e.printStackTrace();
-                return "error"; // 이미지 저장 실패 시
+                return "error";
             }
         }
 
-        // 일기 수정 사항 저장
-        try {
-            diaryService.editDiary(diary);
-            return "redirect:/myPage";
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Redirecting to myPage...");
-            return "redirect:/myPage";
-        }
+        diaryService.editDiary(diary);
+
+        return "redirect:/myPage";
     }
+
 }

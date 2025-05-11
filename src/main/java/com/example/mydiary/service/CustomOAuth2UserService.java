@@ -1,6 +1,8 @@
 package com.example.mydiary.service;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.example.mydiary.entity.Member;
 import com.example.mydiary.oauth.OAuthAttributes;
@@ -58,6 +60,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 Collections.singleton(() -> "ROLE_USER"));
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
+        Map<String, Object> customAttributes = new HashMap<>(attributes.getAttributes());
+        customAttributes.put("provider", attributes.getProvider());
+
         return new DefaultOAuth2User(
                 Collections.singleton(() -> "ROLE_USER"),
                 attributes.getAttributes(),
@@ -67,6 +72,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     // 사용자 저장 or 업데이트
     private Member saveOrUpdate(OAuthAttributes attributes) {
         Member existing = memberMapper.findByuId(attributes.getUId());
+        
         if (existing == null) {
             Member newUser = Member.builder()
                     .uId(attributes.getUId())
