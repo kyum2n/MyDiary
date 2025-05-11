@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,17 +13,15 @@ import com.example.mydiary.entity.Member;
 import com.example.mydiary.repository.UserMapper;
 import com.example.mydiary.service.UserService;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
 
-    @Value("${upload.profile-dir}")
-    private String uploadDir;
-
-    public UserServiceImpl(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
+    private static final String UPLOAD_DIR = "src/main/resources/static/uploads/profile/";
 
     // 사용자 id로 사용자 정보 조회
     @Override
@@ -52,12 +49,8 @@ public class UserServiceImpl implements UserService {
             String extension = getFileExtension(originalFilename).toLowerCase();
             String fileName = UUID.randomUUID() + extension;
 
-            // 파일 경로(각자의 로컬 컴퓨터에 따라 절대 경로 설정)
-            Path realUploadDir = Paths.get(uploadDir).toAbsolutePath();
-            Files.createDirectories(realUploadDir);
-
-            Path filePath = realUploadDir.resolve(fileName);
-            Files.write(filePath, uImage.getBytes());
+            // 파일 경로
+            Path filePath = Paths.get(UPLOAD_DIR + fileName);
 
             // 디렉토리 없으면 생성
             Files.createDirectories(filePath.getParent());

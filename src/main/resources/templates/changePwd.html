@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>비밀번호 변경 | MyDiary</title>
@@ -10,6 +11,7 @@
             margin: 0;
             padding: 0;
         }
+
         /* header {
             background-color: white;
             border-bottom: 4px solid #2684ff;
@@ -21,12 +23,15 @@
             margin: 0;
             font-size: 24px;
         }
+
         header a {
             margin-left: 15px;
             text-decoration: none;
             color: #333;
         }
-        header, .header-nav{
+
+        header,
+        .header-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,6 +39,7 @@
             background-color: #f8f8f8;
             border-bottom: 1px solid #ddd;
         }
+
         header #me {
             width: 50px;
             height: 50px;
@@ -41,6 +47,7 @@
             object-fit: cover;
             margin: 10px;
         }
+
         .logout-button {
             background: none;
             border: none;
@@ -73,6 +80,7 @@
             justify-content: center;
             margin-top: 50px;
         }
+
         .form-box {
             background-color: white;
             padding: 40px 60px;
@@ -80,35 +88,42 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 420px;
         }
+
         h2 {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .form-row {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .form-row label {
             width: 130px;
             font-weight: bold;
         }
+
         .form-row input {
             flex: 1;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         .error {
             color: red;
             font-size: 13px;
             margin-top: 4px;
         }
+
         .success {
             color: green;
             font-size: 13px;
             margin-top: 4px;
         }
+
         button[type="submit"] {
             display: block;
             width: 100%;
@@ -119,6 +134,7 @@
             cursor: pointer;
             font-weight: bold;
         }
+
         footer {
             margin-top: 80px;
             background-color: #e8e8e8;
@@ -129,6 +145,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -145,11 +162,11 @@
         <nav class="header-nav">
             <a th:href="@{myPage}">마이페이지</a>
             <a th:href="@{myProfile}">내 프로필</a>
-            
+
             <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
             <div>[아이디]님 어서오세요</div>
 
-            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
+            <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/>
         </nav>
     </header>
 
@@ -191,4 +208,5 @@
     <script th:src="@{/js/share.js}"></script>
 
 </body>
+
 </html>

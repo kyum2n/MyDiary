@@ -25,10 +25,10 @@ public class WeatherService {
                     location, apiKey);
 
             RestTemplate restTemplate = new RestTemplate();
-            System.out.println("+++++ 날씨 API 호출 URL: " + url);
+            // System.out.println("+++++ 날씨 API 호출 URL: " + url);
 
             String response = restTemplate.getForObject(url, String.class);
-            System.out.println("+++++ API 응답: " + response);
+            // System.out.println("+++++ API 응답: " + response);
 
             return parseWeatherNowString(response, location);
         } catch (Exception e) {
