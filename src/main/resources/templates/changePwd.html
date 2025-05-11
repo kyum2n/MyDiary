@@ -166,7 +166,7 @@
             <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
             <div>[아이디]님 어서오세요</div>
 
-            <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/>
+            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
         </nav>
     </header>
 

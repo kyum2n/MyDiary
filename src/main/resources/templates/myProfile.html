@@ -134,12 +134,7 @@
             <a th:href="@{myPage}">마이페이지</a>
             <a th:href="@{myProfile}">내 프로필</a>
             <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
-            <th:block th:if="${user != null}">
-                <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage" />
-            </th:block>
-            <th:block th:unless="${user != null}">
-                <img id="me" src="/image/defaultProfileImage.webp" alt="기본 이미지" name="uImage" />
-            </th:block>
+            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
         </nav>
     </header>
     <main>
@@ -147,14 +142,9 @@
             <h2 class="my-profile-title">내 프로필</h2>
 
             <div class="profile-image">
-                <th:block th:if="${user != null}">
-                    <img id="uImage" th:src="@{${user.uImage}}" alt="프로필 사진" name="uImage" />
-                </th:block>
-                <th:block th:unless="${user != null}">
-                    <img id="uImage" src="/image/defaultProfileImage.webp" alt="기본 이미지" name="uImage" />
-                </th:block>
+                <img id="uImage" th:src="${user.uImage} + '?v=' + ${timestamp}" alt="프로필 사진을 불러올 수 없습니다." name="uImage"/>
 
-                <form id="uploadNewUImage" action="/myProfile/uploadUImage" method="post" enctype="multipart/form-data">
+                <form id="uploadNewUImage" th:action="@{/myProfile/uploadUImage}" method="post" enctype="multipart/form-data">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <input type="file" id="imageInput" name="uImage" accept="image/*" style="display: none;">
                     <button id="changeImage" type="button">

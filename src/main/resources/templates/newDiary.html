@@ -73,11 +73,11 @@
             <a th:href="@{myPage}">마이페이지</a>
             <a th:href="@{myProfile}">내 프로필</a>
             <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
-            <img id="me" th:src="@{${user.uImage}}" alt="Me" name="uImage"/>
+            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
         </nav>
     </header>
     <main>
-        <form action="/diary/save" method="post" enctype="multipart/form-data">
+        <form th:action="@{/diary/save}" method="post" enctype="multipart/form-data">
             <p><span id="date-now"></span>의 새 일기 쓰기</p>
             
             <div id="diary-content">
@@ -90,7 +90,7 @@
 
             <div id="image-attach">
                 <h2>이미지 첨부</h2>
-                <input type="file" name="image" id="imageInput">
+                <input type="file" name="image" id="imageInput" onchange="previewImage(event)">
                 <button type="button">이미지 첨부</button>
                 <button type="button" id="searchImageBtn">이미지 검색하기</button>
                 <input type="search" name="search" placeholder="검색 키워드">
@@ -99,7 +99,7 @@
                 <br>
                 <div id="current-image">
                     <h2>현재 이미지</h2>
-                    <img class="imagePreview" width="200" alt="이미지 미리보기" onchange="previewImage(event)">
+                    <img class="imagePreview" width="200" alt="이미지 미리보기">
                 </div>
             </div>
 
