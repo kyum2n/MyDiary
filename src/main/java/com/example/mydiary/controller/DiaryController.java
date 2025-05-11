@@ -2,20 +2,14 @@ package com.example.mydiary.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Member;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.mydiary.entity.Diary;
 import com.example.mydiary.service.DiaryService;
-import com.example.mydiary.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class DiaryController {
 
     private final DiaryService diaryService;
-    private final UserService userService;
 
     // 이미지 저장 경로 설정
     @Value("${upload.diary-dir}")
@@ -50,10 +42,8 @@ public class DiaryController {
     @GetMapping("/myPage")
     public String myPage(Model model, Principal principal) {
         String uId = principal.getName();
-        com.example.mydiary.entity.Member user = userService.findUserByUId(uId);
         List<Diary> diaries = diaryService.getAllDiaries(uId);
         model.addAttribute("diaries", diaries);
-        model.addAttribute("user", user);
         return "myPage";
     }
 
