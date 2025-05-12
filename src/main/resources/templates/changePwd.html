@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 변경 | MyDiary</title>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* header {
+            background-color: white;
+            border-bottom: 4px solid #2684ff;
+            padding: 15px 40px;
+            font-size: 24px;
+            font-weight: bold;
+        } */
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        header,
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header #me {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px;
+        }
+
+        .logout-button {
+            background: none;
+            border: none;
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-button span {
+            display: inline;
+            font-size: 16px;
+        }
+
+        /* nav {
+            background-color: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+        }
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        } */
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .form-box {
+            background-color: white;
+            padding: 40px 60px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 420px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-row label {
+            width: 130px;
+            font-weight: bold;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .success {
+            color: green;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ccc;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 80px;
+            background-color: #e8e8e8;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <!-- <nav>
+            <div class="nav-left">
+                <div>내 게시물들 </div>
+                <div>회원프로필</div>
+            </div>
+            <div class="nav-right">
+                <div><img src="/images/profile.png" alt="프로필" width="30"></div>
+            </div>
+        </nav> -->
+        <nav class="header-nav">
+            <a th:href="@{myPage}">마이페이지</a>
+            <a th:href="@{myProfile}">내 프로필</a>
+
+            <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
+            <div>[아이디]님 어서오세요</div>
+
+            <img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/>
+            <!-- <img src="/image/defaultProfileImage.webp" alt="Me" id="me"> -->
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-box">
+            <h2>비밀번호 변경</h2>
+            <form th:action="@{/changePwd}" method="post" onsubmit="return validatePwdChange()">
+                <div class="form-row">
+                    <label for="currentPwd">원래 비밀번호</label>
+                    <input type="password" id="currentPwd" name="currentPwd" required>
+                </div>
+                <div class="form-row">
+                    <label for="newPwd">새 비밀번호</label>
+                    <input type="password" id="newPwd" name="newPwd" required oninput="validatePwdChange()">
+                </div>
+                <div class="form-row">
+                    <small id="newPwdMsg"></small>
+                </div>
+                <div class="form-row">
+                    <label for="confirmPwd">새 비밀번호 확인</label>
+                    <input type="password" id="confirmPwd" name="confirmPwd" required oninput="validatePwdChange()">
+                </div>
+                <div class="form-row">
+                    <small id="confirmPwdMsg"></small>
+                </div>
+                <button type="submit">비밀번호 변경 완료</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
+
+    <!-- CSRF 토큰 -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <script th:src="@{/js/myProfile.js}"></script>
+    <script th:src="@{/js/share.js}"></script>
+
+</body>
+
+</html>

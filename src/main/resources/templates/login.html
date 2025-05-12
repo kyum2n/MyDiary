@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{../css/login.css}">
+</head>
+<body>
+    <input type="hidden" id="csrfToken" th:value="${_csrf.token}" />
+    <input type="hidden" id="csrfHeader" th:value="${_csrf.headerName}" />
+    
+    <div class="login-container">
+        <h2>로그인</h2>
+
+        <!-- 일반 로그인 -->
+        <form th:action="@{/login}" method="post">
+            <!-- CSRF 토큰 (보안용) -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div class="login-input-group">
+                <div class="input-fields">
+                    <input type="text" name="uId" placeholder="아이디 입력" required>
+                    <input type="password" name="uPwd" placeholder="비밀번호 입력" required>
+                </div>
+                <button type="submit" class="login-btn">로그인</button>
+            </div>
+        </form>
+
+        <!-- 부가 링크 (모달 팝업 연결 추가) -->
+        <div class="links">
+            <a href="#" onclick="document.getElementById('findIdModal').style.display='block'">아이디 찾기</a> |
+            <a href="#" onclick="document.getElementById('findPwdModal').style.display='block'">비밀번호 찾기</a> |
+            <a href="/join">회원가입</a>
+        </div>
+
+        <!-- [추가] 아이디 찾기 모달 -->
+        <div id="findIdModal" class="modal">
+            <div class="modal-content">
+                <!-- <form th:action="@{/findId}" method="post"> -->
+                    <p><strong>이메일로 아이디 찾기</strong></p>
+                    <input type="email" id="findIdEmail" placeholder="가입한 이메일" required><br><br>
+                    <button type="button" onclick="submitFindId()">아이디 찾기</button>
+                    <button type="button" onclick="closeModal('findIdModal')">닫기</button>
+                    <p id="findIdResult" style="margin-top: 10px; color: blue;"></p>
+                <!-- </form> -->
+            </div>
+        </div>
+
+        <!-- 서버 응답 메시지 표시 영역 추가 -->
+        <div th:if="${foundId != null}">
+            <p>회원님의 아이디는: <strong th:text="${foundId}"></strong> 입니다.</p>
+        </div>
+
+        <div th:if="${message != null}">
+            <p style="color: green;" th:text="${message}"></p>
+        </div>
+
+        <div th:if="${error != null}">
+            <p style="color: red;" th:text="${error}"></p>
+        </div>
+
+        <!-- [추가] 비밀번호 찾기 모달 -->
+        <div id="findPwdModal" class="modal">
+            <div class="modal-content">
+                <!-- <form th:action="@{/findPwd}" method="post"> -->
+                    <p><strong>아이디로 임시 비밀번호 발급</strong></p>
+                    <input type="text" id="findPwdUId" placeholder="아이디 입력" required><br><br>
+                    <button type="button" onclick="submitFindPwd()">임시 비밀번호 전송</button>
+                    <button type="button" onclick="closeModal('findPwdModal')">닫기</button>
+                    <p id="findPwdResult" style="margin-top: 10px; color: green;"></p>
+                <!-- </form> -->
+            </div>
+        </div>
+
+
+
+        <!--소셜 로그인 창으로 이동-->
+        <div class="social-section">
+            <h4>SNS 로그인</h4>
+            <div class="social-buttons">
+                <a th:href="@{/oauth2/authorization/kakao}" class="circle-btn kakao">KaKao</a>
+                <a th:href="@{/oauth2/authorization/naver}" class="circle-btn naver">Naver</a>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/login.js}"></script>
+</body>
+</html>

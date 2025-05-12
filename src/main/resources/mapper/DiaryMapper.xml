@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.mydiary.repository.DiaryMapper">
+
+
+    <!-- 모든 일기 조회 -->
+    <select id="selectAllDiaries" resultType="com.example.mydiary.entity.Diary">
+        SELECT *
+        FROM diary
+    </select>
+
+    <!-- 특정 일기 조회 -->
+    <select id="selectDiaryById" resultType="com.example.mydiary.entity.Diary">
+        SELECT *
+        FROM diary
+        WHERE id = #{id}
+    </select>
+    
+    <!-- 특정 날짜에 작성된 일기 조회 -->
+    <select id="findByDateAndUId" resultType="com.example.mydiary.entity.Diary">
+        SELECT *
+        FROM diary
+        WHERE date = #{date}
+        AND uId = #{uId}
+    </select>
+
+    <!-- 일기 등록 -->
+    <insert id="insertDiary">
+        INSERT INTO diary (uId, title, date, content, image, location)
+        VALUES (#{uId}, #{title}, #{date}, #{content}, #{image}, #{location})
+    </insert>
+
+    <!-- 일기 수정 -->
+    <update id="updateDiary">
+        UPDATE diary
+        SET title = #{title},
+            date = #{date},
+            content = #{content},
+            image = #{image},
+            location = #{location}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 일기 삭제 -->
+    <delete id="deleteDiary">
+        DELETE FROM diary WHERE id = #{id}
+    </delete>
+</mapper>

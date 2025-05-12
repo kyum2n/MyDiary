@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+</head>
+
+<body>
+    <header>
+        <h1><a th:href="@{main}">일기</a></h1>
+        <nav>
+            <ul>
+                <li><a th:href="@{myPage}">마이페이지</a></li>
+
+                <li><a th:href="@{myProfile}">내 프로필</a></li>
+                <li>
+                    <button onclick="handleSocialLogout()" class="logout-button">로그아웃</button>
+                </li>
+                <li><img id="me" th:src="@{${user.uImage}(v=${timestamp})}" alt="Me" name="uImage"/></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cal-map">
+
+        <div id="calORmap">
+            <button id="calendarB" class="cmtab activemp">달력</button>
+            <button id="mapB" class="cmtab">지도</button>
+        </div>
+
+        <div id="calendar" class="cmcon activemp">
+            <div id="calendar-con">
+                <button id="prev-month"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 id="calendar-title">2025년 5월</h2>
+                <button id="next-month"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <table id="calendar-grid">
+                <thead>
+                    <tr id="calendar-weekdays">
+                        <th>일</th>
+                        <th>월</th>
+                        <th>화</th>
+                        <th>수</th>
+                        <th>목</th>
+                        <th>금</th>
+                        <th>토</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body">
+                    <tr th:if="${days != null}">
+                        <td th:each="day : ${days}">
+                            <span class="day-entry" th:data-id="${day.id}" th:text="${day.date}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="map" class="cmcon"></div>
+
+    </section>
+
+    <section id="content">
+
+        <div class="grid">
+            <div class="grid-sizer"></div>
+            <div class="gutter-sizer"></div>
+        </div>
+        <button id="load-more">더보기</button>
+        <div id="end-message">더 이상 항목이 없습니다.</div>
+
+    </section>
+
+    <section id="modal-page" style="display: none;">
+
+        <div id="modal-overlay"></div>
+
+        <section id="modal">
+
+            <button id="close-modal"><i class="fa-solid fa-xmark" style="color: #ffffff;"></i></button>
+
+            <img id="modal-image" class="diary-image"
+                th:src="${diary != null && diary.image != null ? diary.image : '/image/welcome.png'}" alt="모달 이미지">
+
+            <div class="modal-desbox">
+                <p id="modal-date"></p>
+                <h2 id="modal-title" th:text="${diary != null ? diary.title : '제목 없음'}">제목</h2>
+                <p id="modal-content" th:text="${diary != null ? diary.content : '내용 없음'}">내용</p>
+            </div>
+
+            <div id="modal-btn"></div>
+
+        </section>
+
+        <div class="how-to-close">
+            <p>팝업 화면 밖을 클릭하여 팝업을 끄세요.</p>
+        </div>
+
+    </section>
+
+    <button id="write-today"><i class="fa-solid fa-pen-nib" style="color: #ffffff;"></i></button>
+
+    <footer>
+        <span th:text="${weatherNow}" id="weatherNow">날씨 정보 불러오는 중...</span>
+    </footer>
+
+    <!-- CSRF 토큰 -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <!-- <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script> -->
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://kit.fontawesome.com/6f494923fa.js" crossorigin="anonymous"></script>
+
+    <script>
+        const currentUserId = '[[${user}]]';
+    </script>
+
+    <script th:src="@{/js/myPage.js}"></script>
+    <script th:src="@{/js/share.js}"></script>
+    <script async defer
+        th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapApiKey} + '&callback=initMap'">
+        </script>
+</body>
+
+</html>
