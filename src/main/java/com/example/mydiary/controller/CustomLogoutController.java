@@ -14,7 +14,7 @@ public class CustomLogoutController {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoClientId;
 
-    @RequestMapping(value = "/customLogout", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/customLogout", method = { RequestMethod.GET, RequestMethod.POST })
     public String handleLogout(HttpSession session) {
         String provider = (session != null) ? (String) session.getAttribute("loginProvider") : null;
 

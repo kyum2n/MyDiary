@@ -21,6 +21,7 @@ import com.example.mydiary.repository.UserMapper;
 import com.example.mydiary.service.UserService;
 import com.example.mydiary.service.WeatherService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.ui.Model;
@@ -45,19 +46,14 @@ public class UserController {
 
     // 사용자 프로필
     @GetMapping("/myProfile")
-    public String showProfile(Model model, Principal principal) {
-        if (principal == null)
+    public String showProfile(Model model, HttpSession session) {
+        // 세션에서 로그인 정보 확인
+        Member user = (Member) session.getAttribute("user");
+
+        if (user == null)
             return "redirect:/login";
 
-        Member user = (Member) ((Authentication) principal).getPrincipal(); // 변경 포인트
-
-        if (user != null) {
-            user.setUPwd("********");
-            if (user.getUImage() == null || user.getUImage().isEmpty()) {
-                user.setUImage("/image/defaultProfileImage.webp");
-            }
-            model.addAttribute("user", user);
-        }
+        user.setUPwd("********");
 
         String weatherNow = weatherService.getWeather("Seoul");
         model.addAttribute("weatherNow", weatherNow);
@@ -67,8 +63,11 @@ public class UserController {
 
     // 프로필 이미지 변경
     @PostMapping("/myProfile/uploadUImage")
-    public String updateUImage(@RequestParam("uImage") MultipartFile uImage, Principal principal) {
-        Member user = (Member) ((Authentication) principal).getPrincipal(); // 변경됨
+    public String updateUImage(@RequestParam("uImage") MultipartFile uImage, HttpSession session) {
+        Member user = (Member) session.getAttribute("user");
+        if (user == null)
+            return "redirect:/login";
+
         userService.updateUImage(user.getUId(), uImage);
         return "redirect:/myProfile";
     }
@@ -99,7 +98,16 @@ public class UserController {
 
     // 비밀번호 변경 페이지
     @GetMapping("/changePwd")
-    public String showChangePasswordPage() {
+    public String showChangePasswordPage(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("timestamp", System.currentTimeMillis());
+
         return "changePwd";
     }
 
@@ -107,11 +115,11 @@ public class UserController {
     @PostMapping("/changePwd")
     public String changePassword(@RequestParam String currentPwd,
             @RequestParam String newPwd,
-            Principal principal,
+            HttpSession session,
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        Member loginUser = (Member) ((Authentication) principal).getPrincipal(); // 변경됨
+        Member loginUser = (Member) session.getAttribute("user");
 
         if (loginUser == null) {
             model.addAttribute("error", "로그인이 필요합니다.");

@@ -21,6 +21,7 @@ CREATE TABLE diary (
     content text,
     image VARCHAR(255),
     location VARCHAR(100),
+    weather VARCHAR(255),
 
     FOREIGN KEY (uId) REFERENCES member (uId)
 );
