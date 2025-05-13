@@ -44,10 +44,12 @@ public class SecurityConfig {
                                                                 .userService(customOAuth2UserService))
                                                 .defaultSuccessUrl("/main", true))
                                 .logout(logout -> logout
+
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                                                 //충돌요소 있어 3개 삭제
                                 );
+
                 return http.build();
         }
 }

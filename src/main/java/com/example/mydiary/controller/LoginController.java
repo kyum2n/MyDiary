@@ -127,6 +127,12 @@ public class LoginController {
         return "redirect:/intro";
     }
 
+    @PostMapping("/logout")
+    public String logoutPost(HttpSession session) {
+        session.invalidate();
+        return "redirect:/kakao-logout";
+    }
+
     // 회원가입
     @GetMapping("/join")
     public String joinPage() {
