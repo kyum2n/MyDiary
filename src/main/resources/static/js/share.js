@@ -13,8 +13,6 @@ function handleSocialLogout() {
     setTimeout(() => {
         try { if (naverPopup) naverPopup.close(); } catch (e) {}
         
-        window.location.href = "/logout";
-        
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         
 

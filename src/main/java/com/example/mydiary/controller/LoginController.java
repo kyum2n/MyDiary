@@ -113,12 +113,6 @@ public class LoginController {
         return "redirect:/main";
     }
 
-    @GetMapping("/logout")
-    public String customLogoutRedirect(HttpSession session) {
-        session.invalidate(); // 세션 초기화
-        return "redirect:/kakao-logout";
-    }
-
     @GetMapping("/kakao-logout")
     public String redirectToKakaoLogout() {
         String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +

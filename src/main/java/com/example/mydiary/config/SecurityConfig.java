@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import com.example.mydiary.security.CustomLogoutSuccessHandler;
 import com.example.mydiary.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,24 +38,17 @@ public class SecurityConfig {
                                                                 "/findId", "/findPwd", "/main")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
-                                // .formLogin(form -> form 없애도 됨
-                                // .loginPage("/login")
-                                // .loginProcessingUrl("/authentication")
-                                // .usernameParameter("usernameInput")
-                                // .passwordParameter("passwordInput")
-                                // .defaultSuccessUrl("/main", true)
-                                // .failureUrl("/login?error"))
                                 .oauth2Login(oauth2 -> oauth2
                                                 .loginPage("/login")
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .defaultSuccessUrl("/main", true))
                                 .logout(logout -> logout
-                                                .logoutUrl("/customLogout")
-                                                .logoutSuccessUrl("/intro")
-                                                .clearAuthentication(true)
-                                                .invalidateHttpSession(true)
-                                                .deleteCookies("JSESSIONID"));
+
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                                                //충돌요소 있어 3개 삭제
+                                );
 
                 return http.build();
         }
