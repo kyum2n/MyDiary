@@ -1,9 +1,11 @@
 package com.example.mydiary.controller;
 
+import com.example.mydiary.entity.Member;
 import com.example.mydiary.service.GoogleMapService;
 import com.example.mydiary.service.UserService;
 import com.example.mydiary.service.WeatherService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,20 +35,17 @@ public class ShareController {
 
     // 모든 템플릿에서 사용자 정보 공통으로 적용
     @ModelAttribute("user")
-    public void addUserToModel(Authentication authentication, Model model) {
+    public void addUserToModel(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
 
-        if (authentication != null && authentication.getName() != null) {
-            String uId = authentication.getName();
-            com.example.mydiary.entity.Member user = userService.findUserByUId(uId);
-            // 프로필 사진 이미지가 비어있으면 디폴트 이미지 보여주기
-            if (user != null) {
-                if (user.getUImage() == null || user.getUImage().isEmpty()) {
-                    user.setUImage("/image/defaultProfileImage.webp");
-                }
-                model.addAttribute("user", user);
+        // 프로필 사진 이미지가 비어있으면 디폴트 이미지 보여주기
+        if (user != null) {
+            if (user.getUImage() == null || user.getUImage().isEmpty()) {
+                user.setUImage("/image/defaultProfileImage.webp");
             }
             model.addAttribute("user", user);
-            model.addAttribute("timestamp", System.currentTimeMillis());
         }
+        model.addAttribute("user", user);
+        model.addAttribute("timestamp", System.currentTimeMillis());
     }
 }

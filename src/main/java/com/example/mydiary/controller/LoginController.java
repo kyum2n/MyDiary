@@ -1,13 +1,5 @@
 package com.example.mydiary.controller;
 
-import com.example.mydiary.entity.Member;
-import com.example.mydiary.repository.MemberMapper;
-import com.example.mydiary.service.MailService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Collections;
 import java.util.UUID;
 
@@ -23,6 +15,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.mydiary.entity.Member;
+import com.example.mydiary.repository.MemberMapper;
+import com.example.mydiary.service.MailService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -99,7 +99,7 @@ public class LoginController {
             return "login";
         }
 
-        session.setAttribute("loginUser", member);
+        session.setAttribute("user", member);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 member, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
@@ -113,9 +113,17 @@ public class LoginController {
         return "redirect:/main";
     }
 
-    // 카카오 로그아웃
-    @GetMapping("/logout-kakao")
-    public String kakaoLogoutRedirect() {
+    @GetMapping("/kakao-logout")
+    public String redirectToKakaoLogout() {
+        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout" +
+                "?client_id=b881c38fcf1147a2d3c238e784c3be5b" +
+                "&logout_redirect_uri=http://localhost:8080/logout-kakao";
+        return "redirect:" + kakaoLogoutUrl;
+    }
+
+    @GetMapping("/logout-success")
+    public String kakaoFinalLogout(HttpSession session) {
+        session.invalidate();
         return "redirect:/intro";
     }
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Naver Logout</title>
+    <script>
+        // 팝업이 완전히 열리고 사용자 동작이 인정된 후 로그아웃 요청 전송
+        setTimeout(() => {
+            window.location.href = "https://nid.naver.com/nidlogin.logout";
+        }, 300); // 약간의 대기 후 이동
+
+        // 그 후 일정 시간 지나면 창 자동 종료
+        setTimeout(() => {
+            window.close();
+        }, 2500);
+    </script>
+</head>
+
+<body>
+    <p>네이버 로그아웃 중입니다...</p>
+</body>
+
+</html>

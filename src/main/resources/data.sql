@@ -12,5 +12,5 @@ NULL
 
 -- INSERT into diary (uId, title, date, content, image, location)
 --     VALUES ('user1', '첫 번째 일기', '2025-05-02', '이것은 첫 번째 일기입니다.', '', '서울');
-INSERT INTO diary (uId, title, date, image, location, content) VALUES
-('test001', '봄 소풍', '2025-04-29', '', '서울숲', '따뜻한 봄날에 산책을 다녀왔다.');
+INSERT INTO diary (uId, title, date, weather, image, location, content) VALUES
+('test001', '봄 소풍', '2025-04-29', '', '', '서울숲', '따뜻한 봄날에 산책을 다녀왔다.');

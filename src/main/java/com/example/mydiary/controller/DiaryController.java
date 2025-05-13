@@ -2,20 +2,14 @@ package com.example.mydiary.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Member;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.mydiary.entity.Diary;
+import com.example.mydiary.entity.Member;
 import com.example.mydiary.service.DiaryService;
 import com.example.mydiary.service.UserService;
+import com.example.mydiary.service.WeatherService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,6 +36,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
     private final UserService userService;
+    private final WeatherService weatherService;
 
     // 이미지 저장 경로 설정
     @Value("${upload.diary-dir}")
@@ -47,13 +47,30 @@ public class DiaryController {
     private String googleMapApiKey;
 
     // 마이 페이지로 이동
+    // 수정
     @GetMapping("/myPage")
-    public String myPage(Model model, Principal principal) {
-        String uId = principal.getName();
-        com.example.mydiary.entity.Member user = userService.findUserByUId(uId);
+    public String myPage(HttpServletRequest request, Model model) {
+        // 세션에서 로그인 정보 확인
+        HttpSession session = request.getSession();
+        Member user = (Member) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        String uId = user.getUId();
+
+        // 일기 정보 불러오기
         List<Diary> diaries = diaryService.getAllDiaries(uId);
         model.addAttribute("diaries", diaries);
+
+        if (user.getUImage() == null || user.getUImage().isEmpty()) {
+            user.setUImage("/image/defaultProfileImage.webp");
+        }
+
         model.addAttribute("user", user);
+        model.addAttribute("timestamp", System.currentTimeMillis());
+
         return "myPage";
     }
 
@@ -67,8 +84,12 @@ public class DiaryController {
     // 날짜 선택 후 일기 조회 및 작성
     @GetMapping("/api/diary/{date}")
     public ResponseEntity<?> getDiaryByDate(@PathVariable("date") String date,
-            Principal principal) {
-        String uId = principal.getName();
+            HttpSession session) {
+
+        // 세션에서 로그인 정보 확인
+        Member user = (Member) session.getAttribute("user");
+
+        String uId = user.getUId();
 
         try {
             java.sql.Date sqlDate = java.sql.Date.valueOf(date); // "yyyy-MM-dd" 형식
@@ -96,29 +117,39 @@ public class DiaryController {
 
     // 새 일기 추가
     @GetMapping("/newDiary")
-    public String newDiary(Model model, Principal principal) {
+    public String newDiary(Model model, HttpSession session) {
+
+        // 세션에서 로그인 정보 확인
+        Member user = (Member) session.getAttribute("user");
+        if (user == null)
+            return "redirect:/login";
         model.addAttribute("diary", new Diary());
         return "newDiary";
     }
 
-    // 새 일기 저장
+    // // 새 일기 저장
     @PostMapping("/diary/save")
     public String addDiary(@ModelAttribute Diary diary,
             @RequestParam("image") MultipartFile image,
-            Principal principal) {
+            HttpSession session) {
+        System.out.println("+++++++++++++++image : " + image.getContentType());
 
         // 세션에서 로그인 정보 확인
-        diary.setUId(principal.getName());
+        Member user = (Member) session.getAttribute("user");
+        if (user == null)
+            return "redirect:/login";
+        diary.setUId(user.getUId());
 
         // 이미지 처리
         if (!image.isEmpty()) {
+
             try {
                 File uploadDir = new File(diaryUploadDir);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
 
-                // 파일 이름 지정
+                // 서버에 저장될 파일 경로 지정
                 String originalFilename = image.getOriginalFilename();
                 String filename = System.currentTimeMillis() + "_" + originalFilename;
                 String filePath = diaryUploadDir + filename;
@@ -128,7 +159,8 @@ public class DiaryController {
                 image.transferTo(dest);
 
                 // DB에는 상대 경로로 저장
-                diary.setImage(filePath);
+                diary.setImage("/uploads/diary/" + filename);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 return "error"; // 이미지 저장 실패 시
@@ -149,11 +181,15 @@ public class DiaryController {
     @GetMapping("/editDiary")
     public String editDiary(@RequestParam("id") int id,
             Model model,
-            Principal principal) {
+            HttpSession session) {
 
         Diary diary = diaryService.getDiaryById(id);
 
-        String uId = principal.getName();
+        // 세션에서 로그인 정보 확인
+        Member user = (Member) session.getAttribute("user");
+        if (user == null)
+            return "redirect:/login";
+        String uId = user.getUId();
 
         // 다른 사용자 접근 제한
         if (!diary.getUId().equals(uId)) {
@@ -168,10 +204,13 @@ public class DiaryController {
     @PostMapping("/diary/edit")
     public String editDiary(@ModelAttribute Diary diary,
             @RequestParam("image") MultipartFile image,
-            Principal principal) {
+            HttpSession session) {
 
-        String uId = principal.getName();
-        diary.setUId(uId);
+        // 세션에서 로그인 정보 확인
+        Member user = (Member) session.getAttribute("user");
+        if (user == null)
+            return "redirect:/login";
+        diary.setUId(user.getUId());
 
         if (!image.isEmpty()) {
             try {
@@ -206,6 +245,18 @@ public class DiaryController {
             e.printStackTrace();
             System.out.println("Redirecting to myPage...");
             return "redirect:/myPage";
+        }
+    }
+
+    // 날씨 입력
+    @GetMapping("/weather")
+    public ResponseEntity<String> getWeatherForLocation(@RequestParam("location") String location) {
+        try {
+            String weather = weatherService.getWeather(location);
+            return ResponseEntity.ok(weather);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("날씨 정보를 가져오지 못했습니다.");
         }
     }
 

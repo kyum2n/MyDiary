@@ -28,3 +28,17 @@ function previewImage(event) {
         }
     }
 }
+
+// 입력받은 위치의 날씨 불러오기
+function fetchWeather() {
+    const input = document.getElementById("locationInput");
+    const location = input.value;
+
+    fetch(`/weather?location=${encodeURIComponent(location)}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("weatherPreview").innerText = data;
+            document.getElementById("location").value = location;
+            document.getElementById("weather").value = data;
+        });
+}
